@@ -1,0 +1,6 @@
+@reichan_api_c__HostAddress = http://localhost:5152
+
+GET {{reichan_api_c__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
