@@ -17,11 +17,15 @@ public class UserService : IUserService
         
         var documents = await collection.Find(new BsonDocument()).ToListAsync();
 
-        var users = documents.Select(doc => new UserDto {
+        var users = documents.Select(doc => new UserDto{
             Id = doc["_id"].AsObjectId.ToString(),
-            Name = doc["name"].AsString,            
-            Email = doc["email"].AsString,
-            Password = doc["password"].AsString
+            Nick = doc["nick"].AsString,            
+            PublicKey = doc["publicKey"].AsString,
+            Image = doc["image"].AsString,
+            Posts = doc["posts"].AsBsonArray.Select(post => new UserPostDto {
+                Id = post["_id"].AsObjectId.ToString(),
+                Signature = post["signature"].AsString
+            }).ToArray()
         }).ToList();
             
         var response = new UsersResponse {
@@ -33,19 +37,14 @@ public class UserService : IUserService
 
     public async Task CreateAsync(CreateUserDto body)
     {
-        var filter = Builders<BsonDocument>.Filter.Eq("email", body.Email);
-
-        var userExists = collection.Find(filter).FirstOrDefault();
-
-        if(userExists != null) {
-            throw new InvalidOperationException("Email already exists.");
-        }
 
         var  user = new BsonDocument {
-            { "name",  body.Name },
-            { "email", body.Email},
-            { "password", body.Password}
+            { "nick",  body.Nick },
+            { "publicKey", body.PublicKey},
+            { "image", body.Image },
+            { "posts", new BsonArray() }
         };
+
         await collection.InsertOneAsync(user);
         
         return;

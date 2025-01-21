@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
 public class UserDto
 {
-    public required string Id { get; set; } // Identificador único do usuário
-    public required string Name { get; set; } // Nome do usuário
-    public required string Email { get; set; } // Email do usuário
-    public required string Password { get; set; } // Idade do usuário
+    public required string Id { get; set; }
+    public required string Nick { get; set; }
+    public required string PublicKey { get; set; } 
+    public required string Image { get; set; } 
+    public required Array Posts { get; set; }
 }

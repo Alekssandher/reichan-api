@@ -5,8 +5,7 @@ using MongoDB.Bson;
 
 public class Database
 {
-    private static Database _instance;
-    private MongoClient _client;
+    private static readonly Lazy<Database> _instance = new Lazy<Database>(() => new Database());    private MongoClient _client;
 
     private Database() { }
 
@@ -14,11 +13,7 @@ public class Database
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = new Database();
-            }
-            return _instance;
+            return _instance.Value;
         }
     }
 

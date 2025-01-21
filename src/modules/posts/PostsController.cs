@@ -2,32 +2,34 @@ using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController : ControllerBase {
-    private readonly IUserService _userService;
 
-    public UsersController(IUserService userService)
+public class PostsController : ControllerBase {
+    private readonly IPostService _postService;
+
+    public PostsController(IPostService postService)
     {
-        _userService = userService;
+        _postService = postService;
     }
 
     [HttpGet("findAll")]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetPosts()
     {
-        var users = await _userService.GetAllAsync();
+        var posts = await _postService.GetAllAsync();
         
         return Ok(new {
             success = true,
-            users
+            posts
         });
     }
 
     [ValidateModel]
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto body)
+    [HttpPost("createSigned")]
+    public async Task<IActionResult> CreatePost([FromBody] CreatePostDto body)
     {
         try
         {
-            await _userService.CreateAsync(body);
+            
+            await _postService.CreateAsync(body);
             return Ok("Created");
         }
         catch (InvalidOperationException ex)

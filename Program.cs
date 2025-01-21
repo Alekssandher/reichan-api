@@ -20,7 +20,7 @@ public class Program {
         .ConfigureApiBehaviorOptions(options =>
         {
             options.SuppressModelStateInvalidFilter = true; // Disable the automatic model validation
-        });
+        });        
 
         var app = builder.Build();
 
