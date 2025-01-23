@@ -24,6 +24,7 @@ public class UserService : IUserService
             Image = doc["image"].AsString,
             Posts = doc["posts"].AsBsonArray.Select(post => new UserPostDto {
                 Id = post["_id"].AsObjectId.ToString(),
+                PublicKey = post["publicKey"].AsString,
                 Signature = post["signature"].AsString
             }).ToArray()
         }).ToList();

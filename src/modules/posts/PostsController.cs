@@ -22,14 +22,13 @@ public class PostsController : ControllerBase {
         });
     }
 
-    [ValidateModel]
+    [ServiceFilter(typeof(ValidateSignature))]
     [HttpPost("createSigned")]
-    public async Task<IActionResult> CreatePost([FromBody] CreatePostDto body)
+    public async Task<IActionResult> CreatePost([FromBody] CreateSignedPostDto body)
     {
         try
-        {
-            
-            await _postService.CreateAsync(body);
+        {            
+            await _postService.CreateSignedAsync(body);
             return Ok("Created");
         }
         catch (InvalidOperationException ex)

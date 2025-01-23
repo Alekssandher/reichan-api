@@ -21,7 +21,6 @@ public class UsersController : ControllerBase {
         });
     }
 
-    [ValidateModel]
     [HttpPost("create")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto body)
     {
