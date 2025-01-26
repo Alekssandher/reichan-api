@@ -22,11 +22,11 @@ public class UsersController : ControllerBase {
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto body)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto dto)
     {
         try
         {
-            await _userService.CreateAsync(body);
+            await _userService.CreateAsync(dto);
             return Ok("Created");
         }
         catch (InvalidOperationException ex)

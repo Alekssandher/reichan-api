@@ -7,10 +7,10 @@ public class UserService : IUserService
     private readonly MongoClient client;
     private readonly IMongoCollection<BsonDocument> collection;
 
-    public UserService()
+    public UserService(DatabaseConfig config)
     {
         client = Database.Instance.GetClient();
-        collection = client.GetDatabase("test").GetCollection<BsonDocument>("users");
+        collection = client.GetDatabase(config.DatabaseName).GetCollection<BsonDocument>(config.UsersCollection);
     }
     public async Task<UsersResponse> GetAllAsync()
     {   
@@ -19,13 +19,11 @@ public class UserService : IUserService
 
         var users = documents.Select(doc => new UserDto{
             Id = doc["_id"].AsObjectId.ToString(),
-            Nick = doc["nick"].AsString,            
-            PublicKey = doc["publicKey"].AsString,
-            Image = doc["image"].AsString,
-            Posts = doc["posts"].AsBsonArray.Select(post => new UserPostDto {
-                Id = post["_id"].AsObjectId.ToString(),
-                PublicKey = post["publicKey"].AsString,
-                Signature = post["signature"].AsString
+            Nick = doc["Nick"].AsString,            
+            PublicKey = doc["PublicKey"].AsString,
+            Image = doc["Image"].AsString,
+            Posts = doc["Posts"].AsBsonArray.Select(post => new UserPostDto {
+                Id = post["_id"].AsObjectId.ToString()
             }).ToArray()
         }).ToList();
             
@@ -38,13 +36,13 @@ public class UserService : IUserService
 
     public async Task CreateAsync(CreateUserDto body)
     {
+        var userExists = new FindUserByPublicKey().FindUserByPubKey(body.PublicKey);
+        if (userExists != null)
+        {
+            throw new InvalidOperationException("This user already exists");
+        }
 
-        var  user = new BsonDocument {
-            { "nick",  body.Nick },
-            { "publicKey", body.PublicKey},
-            { "image", body.Image },
-            { "posts", new BsonArray() }
-        };
+        var user = new CreateUserDto(body.Nick, body.PublicKey, body.Image).ToBsonDocument();
 
         await collection.InsertOneAsync(user);
         

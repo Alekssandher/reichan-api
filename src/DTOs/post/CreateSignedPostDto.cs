@@ -17,13 +17,17 @@ public class CreateSignedPostDto {
     [StringLength(15, MinimumLength = 1, ErrorMessage = "Category chars must be between 1 - 15 chars")]
     public string Category { get; set;}
 
-    
-    public string Author { get; set; }
+   
+    public string? Author { get; set; }
 
     [StringLength(500, MinimumLength = 1, ErrorMessage = "Signature lenght limit reached")]
     public string Signature { get; set; }
 
+    public List<ReplyDto> Replies { get; set; }
     public string Date { get; set; }
+
+    public bool Active { get; set; }
+    public int Votes { get; set; }
 
     public CreateSignedPostDto(string publicKey,string title, string text, string image, string category, string author, string signature)
     {
@@ -34,7 +38,10 @@ public class CreateSignedPostDto {
         Category = category;
         Author = author;
         Signature = signature;
+        Replies = new List<ReplyDto>();
         Date = DateTime.UtcNow.ToString("o"); // ISO 8601
+        Active = true;
+        Votes = 0;
     }
 
     public string GetFormatedContent (){

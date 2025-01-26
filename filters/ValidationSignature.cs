@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 public class ValidateSignature : IActionFilter
@@ -24,24 +23,20 @@ public class ValidateSignature : IActionFilter
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        // Nada a fazer após a execução da ação
+        // nothing to do here
     }
 
     public static bool Validate (string publicKey, string data, string signatureBase64){
         try
         {
-            // Converter assinatura de base64 para bytes
             byte[] signatureBytes = Convert.FromBase64String(signatureBase64);
 
-            // Converter o dado original para bytes
             byte[] dataBytes = Encoding.UTF8.GetBytes(data);
 
-            // Criar instância de RSA e importar a chave pública
             using (RSA rsa = RSA.Create())
             {
                 rsa.ImportFromPem(publicKey);
 
-                // Validar assinatura usando SHA256 como algoritmo de hash
                 bool isValid = rsa.VerifyData(
                     dataBytes,
                     signatureBytes,
@@ -54,7 +49,7 @@ public class ValidateSignature : IActionFilter
         }
         catch
         {
-            return false; // Retorna falso em caso de qualquer falha
+            return false; 
         }
     }
 }

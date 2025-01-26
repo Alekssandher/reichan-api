@@ -1,4 +1,5 @@
 public interface IPostService {
-    Task<PostsResponse> GetAllAsync();
+    Task<PostResponse> GetAllAsync();
+    Task CreateAsync(CreatePostDto postDto);
     Task CreateSignedAsync(CreateSignedPostDto postDto);
 }

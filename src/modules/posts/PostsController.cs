@@ -22,6 +22,20 @@ public class PostsController : ControllerBase {
         });
     }
 
+    [HttpPost("create")]
+    public async Task<IActionResult> CreatePost([FromBody] CreatePostDto body)
+    {
+        try
+        {
+            await _postService.CreateAsync(body);
+            return Ok("Created");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Exeption ocurred." + ex.Message);
+        }
+    }
+    
     [ServiceFilter(typeof(ValidateSignature))]
     [HttpPost("createSigned")]
     public async Task<IActionResult> CreatePost([FromBody] CreateSignedPostDto body)

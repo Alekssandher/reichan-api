@@ -7,8 +7,6 @@ public class Database
 {
     private static readonly Lazy<Database> _instance = new Lazy<Database>(() => new Database());    private MongoClient _client;
 
-    private Database() { }
-
     public static Database Instance
     {
         get
