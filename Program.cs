@@ -13,9 +13,9 @@ public class Program {
         builder.Services.AddControllers();     
 
         var app = builder.Build();
-        
-        app.MapControllers();
 
+        app.MapControllers();
+        app.UseCors();
         app.Run();
     }
 }

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+
 
 [Route("api/[controller]")]
 [ApiController]
@@ -19,7 +19,7 @@ public class PostsController : ControllerBase {
         
         return Ok(new {
             success = true,
-            posts
+            posts.Posts
         });
     }
 
@@ -28,6 +28,13 @@ public class PostsController : ControllerBase {
     {
         try
         {
+            var filePath = Path.Combine("storage/images", body.Category, body.Image);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return BadRequest(new { success = false, message = "Arquivo não encontrado na categoria fornecida." });
+            }
+
             await _postService.CreateAsync(body);
             return Ok("Created");
         }

@@ -4,6 +4,15 @@ public static class ServicesRegistration
 {
     public static void RegisterServices(this IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()  // Permite qualquer origem
+                    .AllowAnyMethod()  // Permite qualquer método HTTP
+                    .AllowAnyHeader(); // Permite qualquer cabeçalho
+            });
+        });
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPostService, PostsService>();
         services.AddScoped<IReplyService, RepliesService>();
