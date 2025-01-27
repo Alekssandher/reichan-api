@@ -13,9 +13,11 @@ public class PostsService : IPostService
         postsCollection = client.GetDatabase(config.DatabaseName).GetCollection<BsonDocument>(config.PostsCollection);
     }
 
-    public async Task<PostResponse> GetAllAsync()
+    public async Task<PostResponse> GetAllAsync(PostQueryParams queryParams)
     {
-        List<BsonDocument> posts = await postsCollection.Find(post => true).ToListAsync();
+        FilterDefinition<BsonDocument> filter = queryParams.GetFilter();
+
+        List<BsonDocument> posts = await postsCollection.Find(filter).Skip(queryParams.Skip).Limit(queryParams.Limit).ToListAsync();
         List<PostDto> postsDto = posts.Select(post => BsonSerializer.Deserialize<PostDto>(post)).ToList();
         
         PostResponse response = new PostResponse {

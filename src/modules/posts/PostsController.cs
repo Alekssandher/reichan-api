@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -12,9 +13,9 @@ public class PostsController : ControllerBase {
     }
 
     [HttpGet("findAll")]
-    public async Task<IActionResult> GetPosts()
+    public async Task<IActionResult> GetPosts([FromQuery] PostQueryParams queryParams)
     {
-        var posts = await _postService.GetAllAsync();
+        var posts = await _postService.GetAllAsync(queryParams);
         
         return Ok(new {
             success = true,

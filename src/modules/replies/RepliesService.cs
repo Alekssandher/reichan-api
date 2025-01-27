@@ -15,20 +15,22 @@ public class RepliesService : IReplyService
         postsCollection = client.GetDatabase(config.DatabaseName).GetCollection<BsonDocument>(config.PostsCollection);
     }
 
-    // public async Task<PostResponse> GetAllAsync()
-    // {
-    //     List<BsonDocument> posts = await postsCollection.Find(post => true).ToListAsync();
-    //     List<PostDto> postsDto = posts.Select(post => BsonSerializer.Deserialize<PostDto>(post)).ToList();
+    public async Task<RepliesResponse> GetAllAsync()
+    {
+        List<BsonDocument> replies = await repliesCollection.Find(reply => true).ToListAsync();
+        List<ReplyDto> repliesDto = replies.Select(reply => BsonSerializer.Deserialize<ReplyDto>(reply)).ToList();
         
-    //     PostResponse response = new PostResponse {
-    //         Posts = postsDto
-    //     };
+        RepliesResponse response = new RepliesResponse {
+            Replies = repliesDto
+        };
 
-    //     return response;
-    // }
+        return response;
+    }
 
     public async Task CreateAsync(CreateReplyDto replyDto, string targetId)
     {
+
+        Console.WriteLine(targetId);
         var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(targetId));
         
         BsonDocument target = await postsCollection.Find(filter).FirstOrDefaultAsync();
@@ -40,7 +42,7 @@ public class RepliesService : IReplyService
 
         BsonDocument newReply = replyDto.ToBsonDocument();
 
-        var update = Builders<BsonDocument>.Update.Push("Replies", targetId);
+        var update = Builders<BsonDocument>.Update.Push("Replies", replyDto.Id.ToString());
 
         var result = await postsCollection.UpdateOneAsync(filter, update); 
 

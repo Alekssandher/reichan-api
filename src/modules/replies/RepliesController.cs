@@ -11,16 +11,16 @@ public class RepliesController : ControllerBase {
         _replyService = replyService;
     }
 
-    // [HttpGet("findAll")]
-    // public async Task<IActionResult> GetPosts()
-    // {
-    //     var posts = await _postService.GetAllAsync();
+    [HttpGet("findAll")]
+    public async Task<IActionResult> GetReplies()
+    {
+        var replies = await _replyService.GetAllAsync();
         
-    //     return Ok(new {
-    //         success = true,
-    //         posts
-    //     });
-    // }
+        return Ok(new {
+            success = true,
+            replies
+        });
+    }
 
     [HttpPost("create/{targetId}")]
     public async Task<IActionResult> CreatePost([FromBody] CreateReplyDto body, [FromRoute] string targetId)
@@ -28,13 +28,13 @@ public class RepliesController : ControllerBase {
         try
         {
             body.PostId = targetId;
-            Console.WriteLine(body.PostId);   
+           
             await _replyService.CreateAsync(body, targetId);
             return Ok("Created");
         }
         catch (Exception ex)
         {
-            throw new Exception("Exeption ocurred." + ex.Message);
+            throw new Exception("Exeption ocurred: " + ex.Message);
         }
     }
     
