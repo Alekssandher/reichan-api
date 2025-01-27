@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 [ApiController]
 
-public class UploadController : ControllerBase {
+public class ImagesController : ControllerBase {
     // private readonly IPostService _postService;
 
     // public UploadImageController(IPostService postService)
@@ -12,7 +12,7 @@ public class UploadController : ControllerBase {
     //     _postService = postService;
     // }
 
-    [HttpPost("image")]
+    [HttpPost("upload")]
     public async Task<IActionResult> UploadFile(IFormFile file, [FromQuery] string category)
     {
         if (file == null || file.Length == 0)
@@ -55,5 +55,16 @@ public class UploadController : ControllerBase {
         return Ok(new { success = true, fileName, category });
     }
 
+    [HttpGet("get/{category}/{fileName}")]
+    public IActionResult GetImage(string category, string fileName)
+    {
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "images", category, fileName);
+
+        if (!System.IO.File.Exists(filePath))
+            return NotFound(new { success = false, message = "Image not found." });
+
+        var fileBytes = System.IO.File.ReadAllBytes(filePath);
+        return File(fileBytes, "image/jpeg"); // Ajuste o tipo MIME se necessário (png, gif)
+    }
 
 }
