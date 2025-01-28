@@ -5,4 +5,5 @@ public class DatabaseConfig {
     public required string PostsCollection { get; set; }
     public required string UsersCollection { get; set; }
 
+
 }

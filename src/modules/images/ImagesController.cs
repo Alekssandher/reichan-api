@@ -11,8 +11,11 @@ public class ImagesController : ControllerBase {
     // {
     //     _postService = postService;
     // }
+    
 
     [HttpPost("upload")]
+    [ServiceFilter(typeof(ValidateCategory))]
+    [RequestSizeLimit(3 * 1024 * 1024)] // 3 MB
     public async Task<IActionResult> UploadFile(IFormFile file, [FromQuery] string category)
     {
         if (file == null || file.Length == 0)
@@ -20,11 +23,19 @@ public class ImagesController : ControllerBase {
             return BadRequest(new { success = false, message = "Invalid file." });
         }
 
-        var permittedMimeTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+        string[] permittedMimeTypes = 
+        [
+            "image/jpeg", "image/png", "image/gif",   // Imagens
+            "video/mp4", "video/webm", "video/avi"   // Vídeos
+        ];
 
-        var permittedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+        string[] permittedExtensions = 
+        [
+            ".jpg", ".jpeg", ".png", ".gif",         // Imagens
+            ".mp4", ".webm", ".avi"                 // Vídeos
+        ];
 
-        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        string fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
         if (!permittedMimeTypes.Contains(file.ContentType) || !permittedExtensions.Contains(fileExtension))
         {
@@ -36,35 +47,48 @@ public class ImagesController : ControllerBase {
             return BadRequest(new { success = false, message = "Invalid category." });
         }
 
-        var fileId = Guid.NewGuid().ToString();
+        string fileId = Guid.NewGuid().ToString();
 
-        var categoryPath = Path.Combine("storage/images", category);
+        string categoryPath = Path.Combine("storage/uploads", category);
+
         if (!Directory.Exists(categoryPath))
         {
             Directory.CreateDirectory(categoryPath);
         }
 
-        var filePath = Path.Combine(categoryPath, fileId + Path.GetExtension(file.FileName));
+        string filePath = Path.Combine(categoryPath, fileId + Path.GetExtension(file.FileName));
 
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
-        var fileName = fileId + Path.GetExtension(file.FileName);
+        string fileName = fileId + Path.GetExtension(file.FileName);
 
         return Ok(new { success = true, fileName, category });
     }
 
     [HttpGet("get/{category}/{fileName}")]
+    [RequestSizeLimit(3 * 1024 * 1024)] // 3 MB
     public IActionResult GetImage(string category, string fileName)
     {
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "images", category, fileName);
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", category.ToLower(), fileName);
 
         if (!System.IO.File.Exists(filePath))
             return NotFound(new { success = false, message = "Image not found." });
 
-        var fileBytes = System.IO.File.ReadAllBytes(filePath);
-        return File(fileBytes, "image/jpeg"); // Ajuste o tipo MIME se necessário (png, gif)
+        byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+        // Define MIME type
+        string fileExtension = Path.GetExtension(filePath).ToLowerInvariant();
+        string mimeType = fileExtension switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            _ => "application/octet-stream" // Generical MIME type
+        };
+
+        return File(fileBytes, mimeType);
     }
 
 }

@@ -35,7 +35,7 @@ public class CreateSignedPostDto {
         Title = title;
         Text = text;
         Image = image;
-        Category = category;
+        Category = category.ToLower();
         Author = author;
         Signature = signature;
         Replies = new List<ReplyDto>();

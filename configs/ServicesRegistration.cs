@@ -1,4 +1,6 @@
 using FiltersChangeDefaultReturnErrors.Filters;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 public static class ServicesRegistration
 {
@@ -13,6 +15,18 @@ public static class ServicesRegistration
                     .AllowAnyHeader(); // Permite qualquer cabeçalho
             });
         });
+
+        services.Configure<IISServerOptions>(options =>
+        {
+            options.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
+        });
+
+        services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
+        });
+
+        //services.AddResponseCompression();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPostService, PostsService>();
         services.AddScoped<IReplyService, RepliesService>();
@@ -28,7 +42,13 @@ public static class ServicesRegistration
 
     public static void RegisterFilters(this IServiceCollection services)
     {
+        services.AddControllers(options =>
+        {
+            options.Filters.Add(new RequestSizeLimitAttribute(5 * 1024 * 1024)); // 5MB
+        });
         services.AddScoped<ValidateSignature>();
+        services.AddScoped<ValidateCategory>();
+        services.AddScoped<ValidateCategoryPost>();
         
         services.AddControllers(options =>
         {

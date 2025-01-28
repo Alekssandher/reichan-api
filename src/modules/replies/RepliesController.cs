@@ -18,7 +18,7 @@ public class RepliesController : ControllerBase {
         
         return Ok(new {
             success = true,
-            replies
+            replies.Replies
         });
     }
 

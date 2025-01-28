@@ -9,7 +9,7 @@ public class PostQueryParams {
     public string? Author { get; set; }
     public PostQueryParams() {
         
-        Limit = Math.Clamp(Limit, 1, 100);  
+        Limit = Math.Clamp(Limit, 1, 50);  
         Skip = Math.Max(Skip, 0);            
     }
 
@@ -18,7 +18,7 @@ public class PostQueryParams {
 
         if (!string.IsNullOrEmpty(Category))
         {
-            filter &= Builders<BsonDocument>.Filter.Eq("Category", Category);
+            filter &= Builders<BsonDocument>.Filter.Eq("Category", Category.ToLower());
         }
 
         if (!string.IsNullOrEmpty(Author))

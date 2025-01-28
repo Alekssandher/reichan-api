@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class CreatePostDto {
     
-    [StringLength(30, MinimumLength = 1, ErrorMessage = "Title chars must be between 1 - 30 chars")]
+    [StringLength(50, MinimumLength = 1, ErrorMessage = "Title chars must be between 1 - 30 chars")]
     public string Title { get; set; }
 
     [StringLength(600, MinimumLength = 1, ErrorMessage = "Text chars must be between 1 - 600 chars")]
@@ -26,7 +26,7 @@ public class CreatePostDto {
         Title = title;
         Text = text;
         Image = image;
-        Category = category;
+        Category = category.ToLower();
         Author = author;
         Replies = new List<ReplyDto>();
         Date = DateTime.UtcNow.ToString("o"); // ISO 8601

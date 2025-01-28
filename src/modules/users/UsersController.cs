@@ -17,7 +17,7 @@ public class UsersController : ControllerBase {
         
         return Ok(new {
             success = true,
-            users
+            users.Users
         });
     }
 

@@ -24,15 +24,21 @@ public class PostsController : ControllerBase {
     }
 
     [HttpPost("create")]
+    [ServiceFilter(typeof(ValidateCategoryPost))]
+
     public async Task<IActionResult> CreatePost([FromBody] CreatePostDto body)
     {
         try
         {
-            var filePath = Path.Combine("storage/images", body.Category, body.Image);
+            if(string.IsNullOrEmpty(body.Author))
+            {
+                body.Author = "Anonymous";
+            }
+            var filePath = Path.Combine("storage/uploads", body.Category, body.Image);
 
             if (!System.IO.File.Exists(filePath))
             {
-                return BadRequest(new { success = false, message = "Arquivo não encontrado na categoria fornecida." });
+                return BadRequest(new { success = false, message = "Image not found, make sure to send it first." });
             }
 
             await _postService.CreateAsync(body);
@@ -45,6 +51,7 @@ public class PostsController : ControllerBase {
     }
     
     [ServiceFilter(typeof(ValidateSignature))]
+    [ServiceFilter(typeof(ValidateCategoryPost))]
     [HttpPost("createSigned")]
     public async Task<IActionResult> CreatePost([FromBody] CreateSignedPostDto body)
     {

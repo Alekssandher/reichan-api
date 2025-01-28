@@ -1,5 +1,3 @@
-using Microsoft.Extensions.FileProviders;
-
 public class Program {
 
     public static void Main(string[] args) {
@@ -17,7 +15,8 @@ public class Program {
         var app = builder.Build();
 
         app.MapControllers();
-       
+
+        //app.UseResponseCompression();
         app.UseCors();
         app.Run();
     }
