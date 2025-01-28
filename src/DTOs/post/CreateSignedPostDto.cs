@@ -24,7 +24,7 @@ public class CreateSignedPostDto {
     public string Signature { get; set; }
 
     public List<ReplyDto> Replies { get; set; }
-    public string Date { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public bool Active { get; set; }
     public int Votes { get; set; }
@@ -39,13 +39,13 @@ public class CreateSignedPostDto {
         Author = author;
         Signature = signature;
         Replies = new List<ReplyDto>();
-        Date = DateTime.UtcNow.ToString("o"); // ISO 8601
+        CreatedAt = DateTime.UtcNow; // ISO 8601
         Active = true;
         Votes = 0;
     }
 
     public string GetFormatedContent (){
-        string data = Title + Text + Image + Category + Date;
+        string data = Title + Text + Image + Category + CreatedAt;
         return data;
     }
 

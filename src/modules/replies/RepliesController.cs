@@ -27,6 +27,16 @@ public class RepliesController : ControllerBase {
     {
         try
         {
+            if(string.IsNullOrEmpty(body.Author))
+            {
+                body.Author = "Anonymous";
+            }
+
+            if (CheckImage.CheckImageExists(body) == false)
+            {
+                return BadRequest(new { success = false, message = "Image does not exist" });
+            }
+
             body.PostId = targetId;
            
             await _replyService.CreateAsync(body, targetId);

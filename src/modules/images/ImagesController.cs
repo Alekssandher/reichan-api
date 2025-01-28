@@ -74,7 +74,7 @@ public class ImagesController : ControllerBase {
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", category.ToLower(), fileName);
 
         if (!System.IO.File.Exists(filePath))
-            return NotFound(new { success = false, message = "Image not found." });
+            return NotFound(new { success = false, message = "File not found." });
 
         byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
 

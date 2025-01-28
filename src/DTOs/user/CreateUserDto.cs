@@ -12,7 +12,7 @@ public class CreateUserDto
     public string Image { get; set; } 
 
     public List<UserPostDto> Posts { get; set; }
-    public string Date { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public CreateUserDto(string nick, string publicKey, string image)
     {
@@ -21,7 +21,7 @@ public class CreateUserDto
         Image = image;
         
         Posts = new List<UserPostDto>();
-        Date = DateTime.UtcNow.ToString("o"); // ISO 8601
+        CreatedAt = DateTime.UtcNow; // ISO 8601
     }
 
 }

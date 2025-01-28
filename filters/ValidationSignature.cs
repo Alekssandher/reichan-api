@@ -9,7 +9,7 @@ public class ValidateSignature : IActionFilter
         var body = context.ActionArguments["body"] as CreateSignedPostDto 
             ?? throw new InvalidOperationException("Requisition body invalid or missing.");
         
-        Console.WriteLine(body.Date);
+        Console.WriteLine(body.CreatedAt);
         string data = body.GetFormatedContent();
         string publicKey = body.ConvertBase64ToPem(body.PublicKey);
         string signatureBase64 = body.Signature;
