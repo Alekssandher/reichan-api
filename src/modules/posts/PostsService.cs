@@ -26,6 +26,21 @@ public class PostsService : IPostService
 
         return response;
     }
+    public async Task<PostDto> GetByIdAsync(string id)
+    {
+        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id));
+
+        BsonDocument post = await postsCollection.Find(filter).FirstOrDefaultAsync();
+
+        if (post == null)
+        {
+            throw new InvalidOperationException("Post not found.");
+        }
+
+        PostDto postDto = BsonSerializer.Deserialize<PostDto>(post);
+
+        return postDto;
+    }
 
     public async Task CreateAsync(CreatePostDto postDto)
     {

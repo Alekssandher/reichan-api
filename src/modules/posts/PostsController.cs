@@ -22,6 +22,12 @@ public class PostsController : ControllerBase {
             posts.Posts
         });
     }
+    [HttpGet("find/{id}")]
+    public async Task<IActionResult> GetPostById(string id)
+    {
+        var post = await _postService.GetByIdAsync(id);
+        return Ok(new { success = true, post });
+    }
 
     [HttpPost("create")]
     [ServiceFilter(typeof(ValidateCategoryPost))]
