@@ -27,4 +27,12 @@ public class PostQueryParams {
         }
         return filter;
     }
+
+    public FindOptions<BsonDocument> GetFindOptions() {
+        return new FindOptions<BsonDocument> {
+            Skip = Skip,
+            Limit = Limit,
+            Sort = Builders<BsonDocument>.Sort.Descending("CreatedAt") 
+        };
+    }
 }

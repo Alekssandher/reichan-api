@@ -45,11 +45,18 @@ public class RepliesController : ControllerBase {
             {
                 body.Author = "Anonymous";
             }
-
-            if (CheckImage.CheckImageExists(body) == false)
+            if(!string.IsNullOrEmpty(body.Image))
             {
-                return BadRequest(new { success = false, message = "Image does not exist" });
+                if (CheckImage.CheckImageExists(body) == false)
+                {
+                    return BadRequest(new { success = false, message = "Image does not exist" });
+                }
             }
+            else
+            {
+                body.Image = null;
+            }
+            
 
             body.PostId = targetId;
            
