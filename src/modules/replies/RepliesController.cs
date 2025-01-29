@@ -12,14 +12,28 @@ public class RepliesController : ControllerBase {
     }
 
     [HttpGet("findAll")]
-    public async Task<IActionResult> GetReplies()
+    public async Task<IActionResult> GetReplies([FromQuery] ReplyQueryParams queryParams)
     {
-        var replies = await _replyService.GetAllAsync();
+        var replies = await _replyService.GetAllAsync(queryParams);
         
         return Ok(new {
             success = true,
             replies.Replies
         });
+    }
+
+    [HttpGet("find/{id}")]
+    public async Task<IActionResult> GetReply([FromRoute] string id)
+    {
+        try
+        {
+            var reply = await _replyService.GetByIdAsync(id);
+            return Ok(new { success = true, reply });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
     }
 
     [HttpPost("create/{targetId}")]

@@ -15,9 +15,11 @@ public class RepliesService : IReplyService
         postsCollection = client.GetDatabase(config.DatabaseName).GetCollection<BsonDocument>(config.PostsCollection);
     }
 
-    public async Task<RepliesResponse> GetAllAsync()
+    public async Task<RepliesResponse> GetAllAsync(ReplyQueryParams queryParams)
     {
-        List<BsonDocument> replies = await repliesCollection.Find(reply => true).ToListAsync();
+        FilterDefinition<BsonDocument> filter = queryParams.GetFilter();
+
+        List<BsonDocument> replies = await repliesCollection.Find(filter).Skip(queryParams.Skip).Limit(queryParams.Limit).ToListAsync();
         List<ReplyDto> repliesDto = replies.Select(reply => BsonSerializer.Deserialize<ReplyDto>(reply)).ToList();
         
         RepliesResponse response = new RepliesResponse {
@@ -25,6 +27,22 @@ public class RepliesService : IReplyService
         };
 
         return response;
+    }
+
+    public async Task<ReplyDto> GetByIdAsync(string id)
+    {
+        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id));
+
+        BsonDocument reply = await repliesCollection.Find(filter).FirstOrDefaultAsync();
+
+        if (reply == null)
+        {
+            throw new InvalidOperationException("Reply not found.");
+        }
+
+        ReplyDto replyDto = BsonSerializer.Deserialize<ReplyDto>(reply);
+
+        return replyDto;
     }
 
     public async Task CreateAsync(CreateReplyDto replyDto, string targetId)
