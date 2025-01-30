@@ -1,3 +1,5 @@
+using AspNetCoreRateLimit;
+
 public class Program {
 
     public static void Main(string[] args) {
@@ -7,16 +9,17 @@ public class Program {
 
         var builder= WebApplication.CreateBuilder(args);
 
-        builder.Services.RegisterServices();
+        builder.Services.RegisterServices(builder.Configuration);
         builder.Services.RegisterFilters();
         
         builder.Services.AddControllers();     
-
+        
         var app = builder.Build();
 
         app.MapControllers();
 
         //app.UseResponseCompression();
+        app.UseIpRateLimiting();
         app.UseCors();
         app.Run();
     }

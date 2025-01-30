@@ -25,21 +25,21 @@ public class ImagesController : ControllerBase {
 
         string[] permittedMimeTypes = 
         [
-            "image/jpeg", "image/png", "image/gif",   // Imagens
-            "video/mp4", "video/webm", "video/avi"   // Vídeos
+            "image/jpeg", "image/png", "image/webp", "image/gif",   
+            "video/mp4", "video/webm", "video/avi"   
         ];
 
         string[] permittedExtensions = 
         [
-            ".jpg", ".jpeg", ".png", ".gif",         // Imagens
-            ".mp4", ".webm", ".avi"                 // Vídeos
+            ".jpg", ".jpeg", ".png", ".webp", ".gif",         
+            ".mp4", ".webm", ".avi"                 
         ];
 
         string fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
         if (!permittedMimeTypes.Contains(file.ContentType) || !permittedExtensions.Contains(fileExtension))
         {
-            return BadRequest(new { success = false, message = "Only image files are allowed." });
+            return BadRequest(new { success = false, message = "Only image or video files are allowed." });
         }
 
         if (string.IsNullOrEmpty(category))
@@ -78,12 +78,13 @@ public class ImagesController : ControllerBase {
 
         byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
 
-        // Define MIME type
+        // MIME type
         string fileExtension = Path.GetExtension(filePath).ToLowerInvariant();
         string mimeType = fileExtension switch
         {
             ".jpg" or ".jpeg" => "image/jpeg",
             ".png" => "image/png",
+            ".webp" => "image/webp",
             ".gif" => "image/gif",
             _ => "application/octet-stream" // Generical MIME type
         };

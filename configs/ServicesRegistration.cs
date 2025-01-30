@@ -1,18 +1,19 @@
+using AspNetCoreRateLimit;
 using FiltersChangeDefaultReturnErrors.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 public static class ServicesRegistration
 {
-    public static void RegisterServices(this IServiceCollection services)
+    public static void RegisterServices(this IServiceCollection services, IConfiguration Configuration)
     {
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder.AllowAnyOrigin()  // Permite qualquer origem
-                    .AllowAnyMethod()  // Permite qualquer método HTTP
-                    .AllowAnyHeader(); // Permite qualquer cabeçalho
+                builder.AllowAnyOrigin()  
+                    .AllowAnyMethod()  
+                    .AllowAnyHeader(); 
             });
         });
 
@@ -26,10 +27,20 @@ public static class ServicesRegistration
             options.Limits.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
         });
 
-        //services.AddResponseCompression();
+        // Rate limit service configuration
+        services.AddOptions();
+        services.AddMemoryCache();
+        services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+        services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+        services.AddInMemoryRateLimiting();
+        services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+        // Interfaces 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPostService, PostsService>();
         services.AddScoped<IReplyService, RepliesService>();
+
+        // Singleton
         services.AddSingleton(new DatabaseConfig
         {
             DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME") ?? "default_database",
