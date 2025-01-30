@@ -26,7 +26,15 @@ public static class ServicesRegistration
         {
             options.Limits.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
         });
-
+        
+        // Session
+        services.AddDistributedMemoryCache();
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(3);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
         // Rate limit service configuration
         services.AddOptions();
         services.AddMemoryCache();

@@ -18,7 +18,13 @@ public class Program {
 
         app.MapControllers();
 
-        //app.UseResponseCompression();
+        
+        // app.UseMiddleware<CooldownMiddleware>();
+
+        // Uncomment the line below to not allow request from non .onion addresses
+        // app.UseMiddleware<SecureApiMiddleware>();
+        app.UseSession();
+        app.UseRouting();
         app.UseIpRateLimiting();
         app.UseCors();
         app.Run();
