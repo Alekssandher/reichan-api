@@ -59,7 +59,7 @@ public class CaptchaController : ControllerBase {
             AddRandomLines(ctx, image.Width, image.Height);
 
             var fontCollection = new FontCollection();
-            fontCollection.AddSystemFonts();
+            //fontCollection.AddSystemFonts();
             fontCollection.Add("storage/fonts/arial.ttf");
 
             var fonts = fontCollection.Families.ToList();
