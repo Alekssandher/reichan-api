@@ -64,10 +64,13 @@ public static class ServicesRegistration
         services.AddControllers(options =>
         {
             options.Filters.Add(new RequestSizeLimitAttribute(5 * 1024 * 1024)); // 5MB
+            
         });
         services.AddScoped<ValidateSignature>();
         services.AddScoped<ValidateCategory>();
         services.AddScoped<ValidateCategoryPost>();
+        services.AddScoped<ValidateCaptcha>();
+        
         
         services.AddControllers(options =>
         {

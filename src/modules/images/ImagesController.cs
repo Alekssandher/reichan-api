@@ -15,6 +15,7 @@ public class ImagesController : ControllerBase {
 
     [HttpPost("upload")]
     [ServiceFilter(typeof(ValidateCategory))]
+    [ServiceFilter(typeof(ValidateCaptcha))]
     [RequestSizeLimit(3 * 1024 * 1024)] // 3 MB
     public async Task<IActionResult> UploadFile(IFormFile file, [FromQuery] string category)
     {

@@ -18,6 +18,11 @@ public class Program {
 
         app.MapControllers();
 
+<<<<<<< HEAD
+=======
+        
+        app.UseSession();
+>>>>>>> 10236a3 (feat: session)
         app.UseRouting();
         app.UseSession();
 
