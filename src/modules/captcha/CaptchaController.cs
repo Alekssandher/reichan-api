@@ -17,17 +17,6 @@ public class CaptchaController : ControllerBase {
     // {
     //     _captchaService = captchaService;
     // }
-    [HttpPost("validate")]
-    public IActionResult ValidateCaptcha([FromQuery] string userInput)
-    {
-        var storedCode = HttpContext.Session.GetString("CaptchaCode");
-
-        if (string.IsNullOrEmpty(storedCode) || !userInput.Equals(storedCode, StringComparison.OrdinalIgnoreCase))
-        {
-            return BadRequest("Invalid CAPTCHA");
-        }
-        return Ok("CAPTCHA validated");
-    }
 
     [HttpGet("get")]
     public async Task<IActionResult> GetCaptcha() {
@@ -49,7 +38,7 @@ public class CaptchaController : ControllerBase {
     
     public static byte[] GenerateCaptchaImage(string captchaText)
     {
-        using var image = new Image<Rgba32>(180, 60);
+        using Image<Rgba32> image = new(180, 60);
         image.Mutate(ctx =>
         {
             ctx.Fill(Color.Black);
@@ -58,14 +47,23 @@ public class CaptchaController : ControllerBase {
 
             AddRandomLines(ctx, image.Width, image.Height);
 
-            var fontCollection = new FontCollection();
-            fontCollection.AddSystemFonts();
-            fontCollection.Add("wwwroot/fonts/arial.ttf");
+            FontCollection fontCollection = new();
+            
+            
+            string fontPath = "wwwroot/fonts/";
+            if (Directory.Exists(fontPath))
+            {
+                foreach (string file in Directory.GetFiles(fontPath, "*.ttf"))
+                {
+                    fontCollection.Add(file);
+                }
 
-            var fonts = fontCollection.Families.ToList();
-            var random = new Random();
-            var selectedFont = fonts[random.Next(fonts.Count)];
-            var font = new Font(selectedFont, 28, FontStyle.Bold);
+            } else fontCollection.AddSystemFonts();
+
+            List<FontFamily> fonts = fontCollection.Families.ToList();
+            Random random = new();
+            FontFamily selectedFont = fonts[random.Next(fonts.Count)];
+            Font font = new(selectedFont, 28, FontStyle.Bold);
 
             for (int i = 0; i < captchaText.Length; i++)
             {
@@ -77,14 +75,14 @@ public class CaptchaController : ControllerBase {
             }
         });
 
-        using var memoryStream = new MemoryStream();
+        using MemoryStream memoryStream = new();
         image.SaveAsPng(memoryStream);
         return memoryStream.ToArray();
     }
 
     private static void AddNoise(IImageProcessingContext ctx, int width, int height)
     {
-        var random = new Random();
+        Random random = new();
         for (int i = 0; i < 500; i++)
         {
             int x = random.Next(width);
@@ -95,14 +93,14 @@ public class CaptchaController : ControllerBase {
 
     private static void AddRandomLines(IImageProcessingContext ctx, int width, int height)
     {
-        var random = new Random();
+        Random random = new();
         for (int i = 0; i < 5; i++)
         {
-            var points = new PointF[]
-            {
+            PointF[] points =
+            [
                 new PointF(random.Next(width), random.Next(height)),
                 new PointF(random.Next(width), random.Next(height))
-            };
+            ];
 
             ctx.Draw(Color.Gray, 2, new PathBuilder().AddLines(points).Build());
         }
@@ -111,7 +109,7 @@ public class CaptchaController : ControllerBase {
     private static string GenerateRandomText(int length)
     {
         const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
-        var result = new char[length];
+        char[] result = new char[length];
         for (int i = 0; i < length; i++)
         {
             result[i] = chars[RandomNumberGenerator.GetInt32(chars.Length)];

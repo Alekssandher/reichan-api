@@ -12,8 +12,8 @@ public static class ServicesRegistration
             options.AddDefaultPolicy(builder =>
             {
                 builder.AllowAnyOrigin()  
-                    .AllowAnyMethod()  
-                    .AllowAnyHeader(); 
+                    .WithMethods("GET", "POST") 
+                    .WithHeaders("X-CaptchaCode"); 
             });
         });
 

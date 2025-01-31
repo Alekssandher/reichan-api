@@ -1,16 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 
 public class CreatePostDto {
-    
+
+    [Required(ErrorMessage = "Title is required.")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Title chars must be between 1 - 30 chars")]
     public string Title { get; set; }
 
+    [Required(ErrorMessage = "Text is required.")]
     [StringLength(600, MinimumLength = 1, ErrorMessage = "Text chars must be between 1 - 600 chars")]
     public string Text { get; set; }
     
+    [Required(ErrorMessage = "Image is required.")]
     [StringLength(50, ErrorMessage = "Lenght error for image")]
     public string Image { get; set; }
 
+    [Required(ErrorMessage = "Category is required.")]
     [StringLength(15, MinimumLength = 1, ErrorMessage = "Category chars must be between 1 - 15 chars")]
     public string Category { get; set;}
 

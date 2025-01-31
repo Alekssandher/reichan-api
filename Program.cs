@@ -18,13 +18,16 @@ public class Program {
 
         app.MapControllers();
 
-        
-        // app.UseMiddleware<CooldownMiddleware>();
-
-        // Uncomment the line below to not allow request from non .onion addresses
-        // app.UseMiddleware<SecureApiMiddleware>();
-        app.UseSession();
         app.UseRouting();
+        app.UseSession();
+
+        // app.UseMiddleware<CooldownMiddleware>();
+        // app.UseMiddleware<SecureApiMiddleware>();
+        app.UseWhen(context => context.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase), appBuilder =>
+        {
+            appBuilder.UseMiddleware<ValidateCaptchaMiddleware>();
+        });
+        
         app.UseIpRateLimiting();
         app.UseCors();
         app.Run();
