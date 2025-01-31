@@ -59,8 +59,8 @@ public class CaptchaController : ControllerBase {
             AddRandomLines(ctx, image.Width, image.Height);
 
             var fontCollection = new FontCollection();
-            //fontCollection.AddSystemFonts();
-            fontCollection.Add("storage/fonts/arial.ttf");
+            fontCollection.AddSystemFonts();
+            fontCollection.Add("wwwroot/fonts/arial.ttf");
 
             var fonts = fontCollection.Families.ToList();
             var random = new Random();
