@@ -25,7 +25,7 @@ public class CaptchaController : ControllerBase {
         {
             throw new InvalidOperationException("Session is not available.");
         }
-
+        await HttpContext.Session.LoadAsync();
         string captchaText = GenerateRandomText(5);
         Console.WriteLine(captchaText);
         byte[] captchaImage = GenerateCaptchaImage(captchaText);

@@ -18,23 +18,13 @@ public class Program {
 
         app.MapControllers();
 
-<<<<<<< HEAD
-=======
         
         app.UseSession();
->>>>>>> 10236a3 (feat: session)
         app.UseRouting();
         app.UseSession();
-
-        // app.UseMiddleware<CooldownMiddleware>();
-        // app.UseMiddleware<SecureApiMiddleware>();
-        app.UseWhen(context => context.Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase), appBuilder =>
-        {
-            appBuilder.UseMiddleware<ValidateCaptchaMiddleware>();
-        });
         
         app.UseIpRateLimiting();
-        app.UseCors();
+        app.UseCors("AllowWithCredentials");
         app.Run();
     }
 }
