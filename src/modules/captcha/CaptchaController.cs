@@ -60,6 +60,7 @@ public class CaptchaController : ControllerBase {
 
             var fontCollection = new FontCollection();
             fontCollection.AddSystemFonts();
+            fontCollection.Add("storage/fonts/arial.ttf");
 
             var fonts = fontCollection.Families.ToList();
             var random = new Random();
