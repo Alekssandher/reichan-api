@@ -9,11 +9,12 @@ public class SecureApiMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var isTorConnection = context.Request.Headers["X-Forwarded-For"].Any(ip => ip.Contains(".onion"));
+        
+        var forwardedFor = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
 
-        if (!isTorConnection)
+        if (string.IsNullOrEmpty(forwardedFor) || !forwardedFor.Contains(".onion"))
         {
-            context.Response.StatusCode = 403; // Forbidden
+            context.Response.StatusCode = 403; 
             await context.Response.WriteAsync("Access denied. Only Tor traffic is allowed.");
             return;
         }

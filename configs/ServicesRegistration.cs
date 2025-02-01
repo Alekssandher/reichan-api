@@ -21,14 +21,14 @@ public static class ServicesRegistration
                 builder.WithOrigins("http://127.0.0.1:8080")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials(); // Permite o envio de cookies
+                    .AllowCredentials(); 
             });
             options.AddPolicy("AllowWithCredentials", builder =>
             {
                 builder.WithOrigins("https://alekssandher.github.io/reichan-web-client/")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials(); // Permite o envio de cookies
+                    .AllowCredentials(); 
             });
         });
 
@@ -49,7 +49,7 @@ public static class ServicesRegistration
             options.IdleTimeout = TimeSpan.FromMinutes(3);
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
-            options.Cookie.SameSite = SameSiteMode.None; // Ou SameSiteMode.Lax, dependendo do caso
+            options.Cookie.SameSite = SameSiteMode.None;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
         // Rate limit service configuration

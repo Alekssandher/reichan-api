@@ -1,10 +1,14 @@
+using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 
 public class CreateReplyDto
 {
     public ObjectId Id { get; set; }
-    public string PostId { get; set; } = "";
+    public string RepliesTo { get; set; } = "";
     public string? Author { get; set; }
+
+    [Required(ErrorMessage = "Text is required.")]
+    [StringLength(600, MinimumLength = 1, ErrorMessage = "Text chars must be between 1 - 600 chars")]
     public string Text { get; set; }
     public IReadOnlyCollection<ReplyDto> Replies { get; init; }  
     public string? Image { get; set; } = null;

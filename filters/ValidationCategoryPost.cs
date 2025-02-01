@@ -16,7 +16,7 @@ public class ValidateCategoryPost : IActionFilter
             return;
         }
 
-        string category = null;
+        string? category = null;
 
         if (postDto is CreatePostDto post)
         {

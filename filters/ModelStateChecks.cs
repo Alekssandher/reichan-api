@@ -8,7 +8,7 @@ namespace FiltersChangeDefaultReturnErrors.Filters
     {
         private List<string> ListModelErros(ActionContext context) =>
                         context.ModelState
-                        .SelectMany(x => x.Value.Errors)
+                        .SelectMany(x => x.Value!.Errors)
                         .Select(x => x.ErrorMessage)
                         .ToList();
 

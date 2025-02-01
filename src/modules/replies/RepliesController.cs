@@ -35,6 +35,40 @@ public class RepliesController : ControllerBase {
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
+    [HttpPost("createToReply/{targetId}")]
+    public async Task<IActionResult> CreateToReplyPost([FromBody] CreateReplyDto body, [FromRoute] string targetId) 
+    {
+        try
+        {
+            Console.WriteLine("Arrived controller");
+            if(string.IsNullOrEmpty(body.Author))
+            {
+                body.Author = "Anonymous";
+            }
+            if(!string.IsNullOrEmpty(body.Image))
+            {
+                if (CheckImage.CheckImageExists(body) == false)
+                {
+                    return BadRequest(new { success = false, message = "Image does not exist" });
+                }
+            }
+            else
+            {
+                body.Image = null;
+            }
+            
+
+            body.RepliesTo = targetId;
+           
+            await _replyService.CreateToReplyAsync(body, targetId);
+            return Ok("Created");
+        }
+        catch (Exception ex)
+        {
+            
+            throw new Exception("Exeption ocurred: " + ex.Message);
+        }
+    }
 
     [HttpPost("create/{targetId}")]
     public async Task<IActionResult> CreatePost([FromBody] CreateReplyDto body, [FromRoute] string targetId)
@@ -58,7 +92,7 @@ public class RepliesController : ControllerBase {
             }
             
 
-            body.PostId = targetId;
+            body.RepliesTo = targetId;
            
             await _replyService.CreateAsync(body, targetId);
             return Ok("Created");
