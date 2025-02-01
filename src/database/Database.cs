@@ -5,7 +5,8 @@ using MongoDB.Bson;
 
 public class Database
 {
-    private static readonly Lazy<Database> _instance = new Lazy<Database>(() => new Database());    private MongoClient? _client;
+    private static readonly Lazy<Database> _instance = new Lazy<Database>(() => new Database());    
+    private MongoClient? _client;
 
     public static Database Instance
     {
@@ -17,6 +18,7 @@ public class Database
 
     public void ConnectToMongoDb()
     {
+        
         Env.Load();
 
         var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
