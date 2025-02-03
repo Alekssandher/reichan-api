@@ -16,16 +16,9 @@ public static class ServicesRegistration
                     .WithHeaders("X-CaptchaCode"); 
             });
 
-            // options.AddPolicy("AllowWithCredentials", builder =>
-            // {
-            //     builder.WithOrigins("http://127.0.0.1:8080")
-            //         .AllowAnyHeader()
-            //         .AllowAnyMethod()
-            //         .AllowCredentials(); 
-            // });
             options.AddPolicy("AllowWithCredentials", builder =>
             {
-                builder.WithOrigins("https://alekssandher.github.io/reichan-web-client/")
+                builder.WithOrigins("https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials(); 

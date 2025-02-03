@@ -29,6 +29,16 @@ public class PostsController : ControllerBase {
         return Ok(new { success = true, post });
     }
 
+    [HttpPost("vote/{id}/{kindVote}")]
+    [ServiceFilter(typeof(ValidateCaptcha))]
+    public async Task<IActionResult> VotePost(string id, bool kindVote) {
+
+        int vote = kindVote ? 1 : -1;
+
+        await _postService.VotePostAsync(vote, id);
+        return Ok("Voted");
+    }
+
     [HttpPost("create")]
     [ServiceFilter(typeof(ValidateCategoryPost))]
 

@@ -18,10 +18,9 @@ public class Program {
 
         app.MapControllers();
 
-        
-        app.UseSession();
         app.UseRouting();
         app.UseSession();
+        
         
         app.UseIpRateLimiting();
         app.UseCors("AllowWithCredentials");

@@ -33,16 +33,28 @@ public class PostsService : IPostService
 
         BsonDocument post = await postsCollection.Find(filter).FirstOrDefaultAsync();
 
-        if (post == null)
-        {
-            throw new InvalidOperationException("Post not found.");
-        }
+        if (post == null) throw new InvalidOperationException("Post not found.");
+        
 
         PostDto postDto = BsonSerializer.Deserialize<PostDto>(post);
 
         return postDto;
     }
 
+    public async Task VotePostAsync(int vote, string id)
+    {
+        Console.WriteLine(vote);
+        if (vote != 1 && vote != -1) throw new ArgumentException("Vote must be either 1 or -1.", nameof(vote));
+        
+        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id));
+        UpdateDefinition<BsonDocument> update = Builders<BsonDocument>.Update.Inc("Votes", vote);
+
+        var result = await postsCollection.UpdateOneAsync(filter, update);
+
+        if (result.ModifiedCount == 0) throw new InvalidOperationException("Post not found or vote not applied.");
+        
+        return;
+    }
     public async Task CreateAsync(CreatePostDto postDto)
     {
         

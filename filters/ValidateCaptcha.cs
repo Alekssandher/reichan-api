@@ -8,6 +8,8 @@ public class ValidateCaptcha : IActionFilter
         var httpContext = context.HttpContext;
         var session = httpContext.Session;
 
+        
+
         string code = httpContext.Request.Headers["X-CaptchaCode"].FirstOrDefault() ?? string.Empty;
 
         var storedCode = session.GetString("CaptchaCode");
@@ -26,10 +28,17 @@ public class ValidateCaptcha : IActionFilter
             context.Result = new BadRequestObjectResult(new { success = false, message = "Invalid captcha." });
             return;
         }
+
+        // httpContext.Session.Remove("CaptchaCode");
+        // httpContext.Session.Remove("CaptchaCodeExpiration");
+        // httpContext.Session.Set("InColdown", BitConverter.GetBytes(DateTime.UtcNow.AddSeconds(30).ToBinary()));
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        // Do nothing
+        var httpContext = context.HttpContext;
+        var session = httpContext.Session;
+
+        session.Remove("CaptchaCode");
     }
 }

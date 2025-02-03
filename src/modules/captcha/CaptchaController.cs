@@ -21,17 +21,35 @@ public class CaptchaController : ControllerBase {
     [HttpGet("get")]
     public async Task<IActionResult> GetCaptcha() {
 
+        // if (HttpContext.Session.TryGetValue("InColdown", out byte[] captchaCode))
+        // {
+        //     return BadRequest(new { sucess = false, message = "You are under cooldown, wait a little to get another captcha code"});
+        // }
+
         if (HttpContext.Session == null)
         {
             throw new InvalidOperationException("Session is not available.");
         }
+        
         await HttpContext.Session.LoadAsync();
+
+        if (HttpContext.Session.TryGetValue("CaptchaCodeExpiration", out byte[] expirationBytes))
+        {
+            DateTime expirationTime = DateTime.FromBinary(BitConverter.ToInt64(expirationBytes, 0));
+            if (expirationTime > DateTime.UtcNow)
+            {
+                return BadRequest(new {sucess = false, message = "Captcha still valid or under coldown. Please try again later."});
+            }
+        } 
+
         string captchaText = GenerateRandomText(5);
         Console.WriteLine(captchaText);
         byte[] captchaImage = GenerateCaptchaImage(captchaText);
         
        
         HttpContext.Session.SetString("CaptchaCode", captchaText);
+
+        HttpContext.Session.Set("CaptchaCodeExpiration", BitConverter.GetBytes(DateTime.UtcNow.AddSeconds(30).ToBinary()));
 
         return File(captchaImage, "image/png");
     }
