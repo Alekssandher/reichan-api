@@ -49,7 +49,7 @@ public class CaptchaController : ControllerBase {
        
         HttpContext.Session.SetString("CaptchaCode", captchaText);
 
-        HttpContext.Session.Set("CaptchaCodeExpiration", BitConverter.GetBytes(DateTime.UtcNow.AddSeconds(30).ToBinary()));
+        HttpContext.Session.Set("CaptchaCodeExpiration", BitConverter.GetBytes(DateTime.UtcNow.AddSeconds(300).ToBinary()));
 
         return File(captchaImage, "image/png");
     }
