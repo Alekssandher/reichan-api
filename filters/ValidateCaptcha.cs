@@ -16,12 +16,9 @@ public class ValidateCaptcha : IActionFilter
 
         if (storedCode == null)
         {
-            Console.WriteLine("No captcha code found in session.");
-            context.Result = new BadRequestObjectResult(new { success = false, message = "Captcha code not found." });
+            context.Result = new BadRequestObjectResult(new { success = false, message = "Captcha code not found or invalid." });
             return;
         }
-
-        Console.WriteLine("Stored code: " + storedCode);
 
         if (string.IsNullOrEmpty(code) || !code.Equals(storedCode, StringComparison.OrdinalIgnoreCase))
         {
@@ -29,9 +26,6 @@ public class ValidateCaptcha : IActionFilter
             return;
         }
 
-        // httpContext.Session.Remove("CaptchaCode");
-        // httpContext.Session.Remove("CaptchaCodeExpiration");
-        // httpContext.Session.Set("InColdown", BitConverter.GetBytes(DateTime.UtcNow.AddSeconds(30).ToBinary()));
     }
 
     public void OnActionExecuted(ActionExecutedContext context)

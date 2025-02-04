@@ -72,6 +72,12 @@ public class ImagesController : ControllerBase {
     [RequestSizeLimit(3 * 1024 * 1024)] // 3 MB
     public IActionResult GetImage(string category, string fileName)
     {
+        
+        if (!Enum.TryParse<PostCategory>(category, true, out var categoryEnum) || !Enum.IsDefined(typeof(PostCategory), categoryEnum))
+        {
+            return BadRequest(new { success = false, message = "Invalid category." });
+        }
+        
         string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", category.ToLower(), fileName);
 
         if (!System.IO.File.Exists(filePath))

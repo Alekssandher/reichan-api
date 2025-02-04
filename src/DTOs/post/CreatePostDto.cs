@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 public class CreatePostDto {
 
     [Required(ErrorMessage = "Title is required.")]
-    [StringLength(50, MinimumLength = 1, ErrorMessage = "Title chars must be between 1 - 30 chars")]
+    [StringLength(30, MinimumLength = 1, ErrorMessage = "Title chars must be between 1 - 30 chars")]
     public string Title { get; set; }
 
     [Required(ErrorMessage = "Text is required.")]
@@ -11,17 +11,17 @@ public class CreatePostDto {
     public string Text { get; set; }
     
     [Required(ErrorMessage = "Image is required.")]
-    [StringLength(50, ErrorMessage = "Lenght error for image")]
+    [RegularExpression(@"^[\w,\s-]+\.(jpg|jpeg|png|gif|webpm|mp4|ogg)$", ErrorMessage = "Invalid image or video format are allowed.")]
     public string Image { get; set; }
 
     [Required(ErrorMessage = "Category is required.")]
-    [StringLength(15, MinimumLength = 1, ErrorMessage = "Category chars must be between 1 - 15 chars")]
+    [EnumDataType(typeof(PostCategory), ErrorMessage = "Invalid category.")]
     public string Category { get; set;}
 
    
     public string? Author { get; set; }
     public List<ReplyDto> Replies { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; } = DateTime.UtcNow; // ISO 8601
     public bool Active { get; set; }
     public int Votes { get; set; }
 
@@ -30,10 +30,9 @@ public class CreatePostDto {
         Title = title;
         Text = text;
         Image = image;
-        Category = category.ToLower();
+        Category = category;
         Author = author;
         Replies = new List<ReplyDto>();
-        CreatedAt = DateTime.UtcNow; // ISO 8601
         Active = true;
         Votes = 0;
     }

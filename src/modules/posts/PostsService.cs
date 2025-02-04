@@ -43,7 +43,7 @@ public class PostsService : IPostService
 
     public async Task VotePostAsync(int vote, string id)
     {
-        Console.WriteLine(vote);
+        if (!IsValidObjectId(id))  throw new InvalidOperationException("Invalid id.");
         if (vote != 1 && vote != -1) throw new ArgumentException("Vote must be either 1 or -1.", nameof(vote));
         
         FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id));
@@ -51,9 +51,13 @@ public class PostsService : IPostService
 
         var result = await postsCollection.UpdateOneAsync(filter, update);
 
-        if (result.ModifiedCount == 0) throw new InvalidOperationException("Post not found or vote not applied.");
+        if (result.ModifiedCount == 0) throw new KeyNotFoundException("Post not found .");
         
         return;
+        static bool IsValidObjectId(string id)
+        {
+            return ObjectId.TryParse(id, out _);
+        }
     }
     public async Task CreateAsync(CreatePostDto postDto)
     {
@@ -66,10 +70,8 @@ public class PostsService : IPostService
     {
         UserDto? userExists = new FindUserByPublicKey().FindUserByPubKey(post.PublicKey);
 
-        if (userExists == null)
-        {
-            throw new InvalidOperationException("User not found, is the PublicKey correct?");
-        }
+        if (userExists == null) throw new KeyNotFoundException("User not found, is the PublicKey correct?");
+        
 
         BsonDocument newPost = post.ToBsonDocument();
 
@@ -77,4 +79,5 @@ public class PostsService : IPostService
 
         return;
     }
+    
 }

@@ -33,14 +33,30 @@ public class PostsController : ControllerBase {
     [ServiceFilter(typeof(ValidateCaptcha))]
     public async Task<IActionResult> VotePost(string id, bool kindVote) {
 
-        int vote = kindVote ? 1 : -1;
+        try
+        {
+            int vote = kindVote ? 1 : -1;
 
-        await _postService.VotePostAsync(vote, id);
-        return Ok("Voted");
+            await _postService.VotePostAsync(vote, id);
+            return Ok("Voted");
+        }
+        catch (InvalidOperationException ex) 
+        {
+            return StatusCode(400, new {succes = false, message = ex.Message});
+        }
+        catch (KeyNotFoundException ex) 
+        {
+            return BadRequest( new {succes = false, message = ex.Message});
+        }
+        catch (Exception)
+        {
+            
+            return StatusCode(500, new {succes = false, message = "Internal error."});
+        }
     }
 
     [HttpPost("create")]
-    [ServiceFilter(typeof(ValidateCategoryPost))]
+    //[ServiceFilter(typeof(ValidateCategoryPost))]
 
     public async Task<IActionResult> CreatePost([FromBody] CreatePostDto body)
     {
@@ -50,9 +66,19 @@ public class PostsController : ControllerBase {
             {
                 body.Author = "Anonymous";
             }
-            var filePath = Path.Combine("storage/uploads", body.Category, body.Image);
 
-            if (!System.IO.File.Exists(filePath))
+            var baseDirectory = Path.Combine("storage", "uploads", body.Category);
+            var filePath = Path.Combine(baseDirectory, body.Image);
+
+            
+            var fullPath = Path.GetFullPath(filePath);
+           
+            if (!fullPath.EndsWith(filePath))
+            {
+                return BadRequest(new { success = false, message = "Invalid file path." });
+            }
+
+            if (!System.IO.File.Exists(fullPath))
             {
                 return BadRequest(new { success = false, message = "Image not found, make sure to send it first." });
             }
@@ -60,9 +86,9 @@ public class PostsController : ControllerBase {
             await _postService.CreateAsync(body);
             return Ok("Created");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception("Exeption ocurred." + ex.Message);
+            return StatusCode(500, new { success = false, message = "An unexpected error occurred." });
         }
     }
     
@@ -76,13 +102,9 @@ public class PostsController : ControllerBase {
             await _postService.CreateSignedAsync(body);
             return Ok("Created");
         }
-        catch (InvalidOperationException ex)
+        catch (Exception)
         {
-            return BadRequest(new { success = false, message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Exeption ocurred." + ex.Message);
+            return StatusCode(500, new { success = false, message = "An unexpected error occurred." });
         }
         
     }

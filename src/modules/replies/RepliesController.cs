@@ -28,7 +28,7 @@ public class RepliesController : ControllerBase {
         try
         {
             var reply = await _replyService.GetByIdAsync(id);
-            return Ok(new { success = true, reply });
+            return Ok(new { success = true, reply.Replies });
         }
         catch (InvalidOperationException ex)
         {
@@ -36,6 +36,7 @@ public class RepliesController : ControllerBase {
         }
     }
     [HttpPost("createToReply/{targetId}")]
+    [ServiceFilter(typeof(ValidateCaptcha))]
     public async Task<IActionResult> CreateToReplyPost([FromBody] CreateReplyDto body, [FromRoute] string targetId) 
     {
         try
@@ -99,7 +100,7 @@ public class RepliesController : ControllerBase {
         }
         catch (Exception ex)
         {
-            throw new Exception("Exeption ocurred: " + ex.Message);
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
     
