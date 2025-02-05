@@ -15,19 +15,14 @@ public class RepliesService : IReplyService
         postsCollection = client.GetDatabase(config.DatabaseName).GetCollection<BsonDocument>(config.PostsCollection);
     }
 
-    public async Task<RepliesResponse> GetAllAsync(ReplyQueryParams queryParams)
+    public async Task<List<ReplyDto>> GetAllAsync(ReplyQueryParams queryParams)
     {
         FilterDefinition<BsonDocument> filter = queryParams.GetFilter();
 
         List<BsonDocument> replies = await repliesCollection.Find(filter).Skip(queryParams.Skip).Limit(queryParams.Limit).ToListAsync();
         List<ReplyDto> repliesDto = replies.Select(reply => BsonSerializer.Deserialize<ReplyDto>(reply)).ToList();
 
-        RepliesResponse response = new()
-        {
-            Replies = repliesDto
-        };
-
-        return response;
+        return repliesDto;
     }
 
     public async Task<ReplyDto> GetByIdAsync(string id)

@@ -1,5 +1,5 @@
 public interface IReplyService {
-    Task<RepliesResponse> GetAllAsync(ReplyQueryParams queryParams);
+    Task<List<ReplyDto>> GetAllAsync(ReplyQueryParams queryParams);
     
     Task<ReplyDto> GetByIdAsync(string id);
     Task CreateToReplyAsync(CreateReplyDto reply, string targetId);

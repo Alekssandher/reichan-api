@@ -1,6 +1,6 @@
 public interface IUserService
 {
-    Task<UsersResponse> GetAllAsync();
+    Task<List<UserDto>> GetAllAsync();
     Task CreateAsync(CreateUserDto userDto);
 }
 

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 public class UserService : IUserService
@@ -12,31 +13,20 @@ public class UserService : IUserService
         client = Database.Instance.GetClient();
         collection = client.GetDatabase(config.DatabaseName).GetCollection<BsonDocument>(config.UsersCollection);
     }
-    public async Task<UsersResponse> GetAllAsync()
+    public async Task<List<UserDto>> GetAllAsync()
     {   
+        FilterDefinition<BsonDocument> filter = FilterDefinition<BsonDocument>.Empty;
+
+        List<BsonDocument> users = await collection.Find(filter).ToListAsync();
+        List<UserDto> userDtos = users.Select(user => BsonSerializer.Deserialize<UserDto>(user)).ToList();
         
-        var documents = await collection.Find(new BsonDocument()).ToListAsync();
-
-        var users = documents.Select(doc => new UserDto{
-            Id = doc["_id"].AsObjectId.ToString(),
-            Nick = doc["Nick"].AsString,            
-            PublicKey = doc["PublicKey"].AsString,
-            Image = doc["Image"].AsString,
-            Posts = doc["Posts"].AsBsonArray.Select(post => new UserPostDto {
-                Id = post["_id"].AsObjectId.ToString()
-            }).ToArray()
-        }).ToList();
-            
-        var response = new UsersResponse {
-            Users = users
-        };
-
-        return response;
+        return userDtos;
     }
 
     public async Task CreateAsync(CreateUserDto body)
     {
-        var userExists = new FindUserByPublicKey().FindUserByPubKey(body.PublicKey);
+        UserDto? userExists = await new FindUserByPublicKey().FindUserByPubKey(body.PublicKey);
+
         if (userExists != null)
         {
             throw new InvalidOperationException("This user already exists");

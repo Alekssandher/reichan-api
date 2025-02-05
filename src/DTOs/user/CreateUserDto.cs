@@ -11,7 +11,7 @@ public class CreateUserDto
     [StringLength(150, ErrorMessage = "Max length is 50 chars")]
     public string Image { get; set; } 
 
-    public List<UserPostDto> Posts { get; set; }
+    public List<string> Posts { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public CreateUserDto(string nick, string publicKey, string image)
@@ -20,7 +20,7 @@ public class CreateUserDto
         PublicKey = publicKey;
         Image = image;
         
-        Posts = new List<UserPostDto>();
+        Posts = new List<string>();
         CreatedAt = DateTime.UtcNow; // ISO 8601
     }
 

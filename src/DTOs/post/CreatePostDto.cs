@@ -21,7 +21,7 @@ public class CreatePostDto {
    
     public string? Author { get; set; }
     public List<ReplyDto> Replies { get; set; }
-    public DateTime CreatedAt { get; } = DateTime.UtcNow; // ISO 8601
+    public DateTime CreatedAt { get; set; } // ISO 8601
     public bool Active { get; set; }
     public int Votes { get; set; }
 
@@ -33,6 +33,7 @@ public class CreatePostDto {
         Category = category;
         Author = author;
         Replies = new List<ReplyDto>();
+        CreatedAt = DateTime.UtcNow;
         Active = true;
         Votes = 0;
     }

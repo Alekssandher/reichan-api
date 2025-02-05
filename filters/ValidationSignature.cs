@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 public class ValidateSignature : IActionFilter
@@ -16,9 +17,9 @@ public class ValidateSignature : IActionFilter
 
         bool isValid = Validate(publicKey, data, signatureBase64);
         
-        // if(!isValid) {
-        //     context.Result = new BadRequestObjectResult(new { success = false, message = "Invalid signature" });
-        // }
+        if(!isValid) {
+            context.Result = new BadRequestObjectResult(new { success = false, message = "Invalid signature" });
+        }
     }
 
     public void OnActionExecuted(ActionExecutedContext context)

@@ -68,7 +68,7 @@ public class PostsService : IPostService
     }
     public async Task CreateSignedAsync(CreateSignedPostDto post)
     {
-        UserDto? userExists = new FindUserByPublicKey().FindUserByPubKey(post.PublicKey);
+        UserDto? userExists = await new FindUserByPublicKey().FindUserByPubKey(post.PublicKey);
 
         if (userExists == null) throw new KeyNotFoundException("User not found, is the PublicKey correct?");
         

@@ -17,7 +17,7 @@ public class UsersController : ControllerBase {
         
         return Ok(new {
             success = true,
-            users.Users
+            users
         });
     }
 
@@ -35,7 +35,8 @@ public class UsersController : ControllerBase {
         }
         catch (Exception ex)
         {
-            throw new Exception("Exeption ocurred." + ex.Message);
+            Console.WriteLine(ex.Message);
+            return StatusCode(500 ,new { success = false, message = "Internal error "});
         }
         
     }
