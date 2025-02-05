@@ -20,7 +20,7 @@ public class ValidateCaptcha : IActionFilter
             return;
         }
 
-        if (string.IsNullOrEmpty(code) || !code.Equals(storedCode, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrEmpty(code) || !code.Equals(storedCode, StringComparison.Ordinal))
         {
             context.Result = new BadRequestObjectResult(new { success = false, message = "Invalid captcha." });
             return;

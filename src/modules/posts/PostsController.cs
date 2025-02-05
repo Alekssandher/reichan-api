@@ -56,8 +56,8 @@ public class PostsController : ControllerBase {
     }
 
     [HttpPost("create")]
-    //[ServiceFilter(typeof(ValidateCategoryPost))]
-
+    [ServiceFilter(typeof(ValidateCategoryPost))]
+    [ServiceFilter(typeof(ValidateCaptcha))]
     public async Task<IActionResult> CreatePost([FromBody] CreatePostDto body)
     {
         try
