@@ -1,12 +1,20 @@
 using AspNetCoreRateLimit;
+using DotNetEnv;
 using FiltersChangeDefaultReturnErrors.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using MongoDB.Driver;
+using ReichanApi.Interfaces;
+using ReichanApi.Models;
+using ReichanApi.Services; 
 
 public static class ServicesRegistration
 {
+    
     public static void RegisterServices(this IServiceCollection services, IConfiguration Configuration)
     {
+        Env.Load();
+        
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
@@ -34,7 +42,7 @@ public static class ServicesRegistration
         {
             options.Limits.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
         });
-        
+
         // Session
         services.AddDistributedMemoryCache();
         services.AddSession(options =>
@@ -45,6 +53,7 @@ public static class ServicesRegistration
             options.Cookie.SameSite = SameSiteMode.None;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
+
         // Rate limit service configuration
         services.AddOptions();
         services.AddMemoryCache();
@@ -53,20 +62,30 @@ public static class ServicesRegistration
         services.AddInMemoryRateLimiting();
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
-        // Interfaces 
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IPostService, PostsService>();
-        services.AddScoped<IReplyService, RepliesService>();
-
-        // Singleton
-        services.AddSingleton(new DatabaseConfig
+        // Configs Database
+        var databaseConfig = new DatabaseConfig
         {
             DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME") ?? "default_database",
             DatabaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ?? "mongodb://localhost:27017",
             PostsCollection = Environment.GetEnvironmentVariable("POSTS_COLLECTION") ?? "posts",
             UsersCollection = Environment.GetEnvironmentVariable("USERS_COLLECTION") ?? "users",
             RepliesCollection = Environment.GetEnvironmentVariable("REPLIES_COLLECTION") ?? "replies"
+        };
+    
+        services.AddSingleton(databaseConfig);
+        services.AddSingleton<IMongoClient>(_ => new MongoClient(databaseConfig.DatabaseUrl));
+        services.AddSingleton<IMongoDatabase>(sp =>
+            sp.GetRequiredService<IMongoClient>().GetDatabase(databaseConfig.DatabaseName)
+        );
+        services.AddScoped<IMongoCollection<PostModel>>(sp =>
+        {
+            var database = sp.GetRequiredService<IMongoDatabase>();
+            var databaseConfig = sp.GetRequiredService<DatabaseConfig>();
+            return database.GetCollection<PostModel>(databaseConfig.PostsCollection);
         });
+
+    
+        services.AddScoped<IPostService, PostsService>();
     }
 
     public static void RegisterFilters(this IServiceCollection services)
@@ -74,13 +93,10 @@ public static class ServicesRegistration
         services.AddControllers(options =>
         {
             options.Filters.Add(new RequestSizeLimitAttribute(5 * 1024 * 1024)); // 5MB
-            
         });
-        services.AddScoped<ValidateSignature>();
+
         services.AddScoped<ValidateCategory>();
-        services.AddScoped<ValidateCategoryPost>();
         services.AddScoped<ValidateCaptcha>();
-        
         
         services.AddControllers(options =>
         {
