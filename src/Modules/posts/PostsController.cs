@@ -34,14 +34,14 @@ namespace ReichanApi.Controllers
 
                 if (!posts.Any()) return NotFound(new ProblemDetails {
                     Status = StatusCodes.Status404NotFound,
-                    Title = "No Posts Found",
+                    Title = "Posts Not Found",
                     Detail = "There are no posts matching the query.",
                     Instance = HttpContext.Request.Path
                 });
                     
 
                 return Ok(new PostsResponseDTO { 
-                    Status = 202, 
+                    Status = StatusCodes.Status200OK, 
                     Data = posts 
                 });
             }
@@ -77,12 +77,17 @@ namespace ReichanApi.Controllers
 
             PostModel? post = await _postService.GetByIdAsync(id);
             
-            if (post == null ) return NotFound(new { success = false, message = "Post not found" });
+            if (post == null ) return NotFound(new ProblemDetails {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Post Not Found",
+                Detail = $"Post Not Found by ID: '${id}'.",
+                Instance = HttpContext.Request.Path
+            });
 
             PostResponseDTO postDto = post.ToDto();
 
             return Ok( new PostResponseWrapperDTO { 
-                Status = 202, 
+                Status = StatusCodes.Status200OK, 
                 Post = postDto
             });
         }
