@@ -6,7 +6,7 @@ namespace reichan_api.src.Models.Posts {
     {
         [BsonId] 
         [BsonRepresentation(BsonType.ObjectId)] 
-        public required string Id { get; set; }
+        public string? Id { get; set; }
         public string? AuthorPubKey { get; set; }
         public required string Title { get; set; }
         public required string Content { get; set; }

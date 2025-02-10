@@ -10,9 +10,11 @@ namespace reichan_api {
             builder.Services.RegisterServices(builder.Configuration);
             builder.Services.RegisterFilters();
             builder.Services.AddControllers();
+           
+
 
             var app = builder.Build();
-
+            
             app.UseRouting();
             app.UseSession();
             app.UseIpRateLimiting();

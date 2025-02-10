@@ -7,8 +7,8 @@ namespace reichan_api.src.Interfaces {
     {
         Task<IReadOnlyList<PostModel>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options );
         Task<PostResponseDTO?> GetByIdAsync( string id );
-        Task<bool> VotePostAsync( string id, bool vote );
-        //Task CreateAsync(PostDto postDto);
+        Task<bool> VoteAsync( string id, bool vote );
+        Task<bool> CreateAsync( PostDto postDto );
         // Task CreateSignedAsync(CreateSignedPostDto postDto);
     }
 }

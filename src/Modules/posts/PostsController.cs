@@ -5,6 +5,7 @@ using reichan_api.src.QueryParams;
 using reichan_api.src.Interfaces;
 using reichan_api.src.DTOs.Posts;
 using reichan_api.src.DTOs.Global;
+using System.ComponentModel.DataAnnotations;
 
 namespace reichan_api.src.Modules.Posts
 {
@@ -94,10 +95,10 @@ namespace reichan_api.src.Modules.Posts
 
         [HttpPatch("{id}/{vote}")]
         [Produces("application/json")]
-        public async Task<ActionResult<ApiResponse<string>>> VotePost( string id, bool vote ) {
+        public async Task<ActionResult<ApiResponse<string>>> Vote( string id, bool vote ) {
             try
             {
-                bool voted = await _postService.VotePostAsync(id, vote);
+                bool voted = await _postService.VoteAsync(id, vote);
 
                 if(!voted) {
                     return NotFound(new ProblemDetails {
@@ -124,6 +125,31 @@ namespace reichan_api.src.Modules.Posts
                     Instance = HttpContext.Request.Path
                 });
             }
+        }
+
+        [HttpPost]      
+        [Produces("application/json")]  
+        public async Task<ActionResult<ApiResponse<string>>> Create( [FromBody] PostDto postDto ) {
+            try
+            {
+                bool created = await _postService.CreateAsync( postDto );
+
+                return StatusCode(201,  new ApiResponse<string> { 
+                    Status = StatusCodes.Status201Created, 
+                    Data = "Created"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while fetching posts.");
+
+                return StatusCode(500, new ProblemDetails {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Internal error",
+                    Detail = "Something went wrong at our side.",
+                    Instance = HttpContext.Request.Path
+                });
+            } 
         }
 
     }

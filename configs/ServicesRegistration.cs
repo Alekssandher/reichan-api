@@ -1,6 +1,6 @@
 using AspNetCoreRateLimit;
 using DotNetEnv;
-using FiltersChangeDefaultReturnErrors.Filters;
+using reichan_api.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
@@ -90,16 +90,13 @@ public static class ServicesRegistration
 
     public static void RegisterFilters(this IServiceCollection services)
     {
-        services.AddControllers(options =>
-        {
-            options.Filters.Add(new RequestSizeLimitAttribute(5 * 1024 * 1024)); // 5MB
-        });
 
         services.AddScoped<ValidateCategory>();
         services.AddScoped<ValidateCaptcha>();
         
         services.AddControllers(options =>
         {
+            options.Filters.Add(new RequestSizeLimitAttribute(5 * 1024 * 1024)); // 5MB
             options.Filters.Add<ModelStateCheck>();
     
         })  

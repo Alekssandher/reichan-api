@@ -1,9 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using reichan_api.src.Models.Posts;
-using ReichanApi.DTOs;
 using reichan_api.src.Interfaces;
-using ReichanApi.Mappers;
+using reichan_api.src.Mappers;
 using reichan_api.src.DTOs.Posts;
 
 namespace reichan_api.src.Modules.Posts {
@@ -35,12 +34,12 @@ namespace reichan_api.src.Modules.Posts {
 
             PostModel post = await _postsCollection.Find(filter).FirstOrDefaultAsync();
 
-            PostResponseDTO postDto = post.ToDto();
+            PostResponseDTO postDto = post.ResponseToDto();
             
             return postDto;
         }
 
-        public async Task<bool> VotePostAsync ( string id, bool vote ) {
+        public async Task<bool> VoteAsync ( string id, bool vote ) {
             if ( string.IsNullOrWhiteSpace(id) || !ObjectId.TryParse(id, out ObjectId objectId))
             {
                 return false;
@@ -57,6 +56,13 @@ namespace reichan_api.src.Modules.Posts {
             if (result.ModifiedCount == 0) return false; 
             else return true;
             
+        }
+
+        public async Task<bool> CreateAsync( PostDto postDto ) {
+            
+            await _postsCollection.InsertOneAsync(postDto.ToModel());
+
+            return true;
         }
     }
 }
