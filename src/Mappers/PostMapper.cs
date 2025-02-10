@@ -18,7 +18,9 @@ namespace reichan_api.src.Mappers {
                 Category = post.Category,
                 Signature = post.Signature,
                 UpVotes = post.UpVotes,
-                DownVotes = post.DownVotes
+                DownVotes = post.DownVotes,
+                CreatedAt = post.CreatedAt
+                
             };
         }
 
@@ -35,7 +37,8 @@ namespace reichan_api.src.Mappers {
                 Category = postResponseDto.Category,
                 Signature = postResponseDto.Signature,
                 UpVotes = postResponseDto.UpVotes,
-                DownVotes = postResponseDto.DownVotes
+                DownVotes = postResponseDto.DownVotes,
+                CreatedAt = postResponseDto.CreatedAt
             };
         }
 
@@ -44,14 +47,15 @@ namespace reichan_api.src.Mappers {
             return new PostModel 
             {
                 AuthorPubKey = postDto.AuthorPubKey,
-                Author = postDto.Author,
+                Author = postDto.Author!,
                 Title = postDto.Title!,
                 Content = postDto.Content!,
                 Image = postDto.Image!,
                 Category = postDto.Category!,
                 Signature = postDto.Signature,
                 UpVotes = postDto.UpVotes,
-                DownVotes = postDto.DownVotes
+                DownVotes = postDto.DownVotes,
+                CreatedAt = postDto.CreatedAt
             };
         }
     }

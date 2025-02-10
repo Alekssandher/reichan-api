@@ -5,7 +5,6 @@ using reichan_api.src.QueryParams;
 using reichan_api.src.Interfaces;
 using reichan_api.src.DTOs.Posts;
 using reichan_api.src.DTOs.Global;
-using System.ComponentModel.DataAnnotations;
 
 namespace reichan_api.src.Modules.Posts
 {
@@ -21,9 +20,14 @@ namespace reichan_api.src.Modules.Posts
             _logger = logger;
         }
 
+        
         [HttpGet]
-        [Produces("application/json")]
-        public async Task<ActionResult<ApiResponse<IReadOnlyList<PostModel>>>> GetPosts([FromQuery] PostQueryParams queryParams)
+        [EndpointDescription("Retrieves a list of posts based on the provided query parameters.")]
+        [ProducesResponseType(typeof(IReadOnlyList<PostResponseDTO>), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, "application/problem+json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError, "application/problem+json")]
+
+        public async Task<ActionResult> GetPosts([FromQuery] PostQueryParams queryParams)
         {
 
             try
@@ -31,7 +35,7 @@ namespace reichan_api.src.Modules.Posts
                 FilterDefinition<PostModel> filter = queryParams.GetFilter();
                 FindOptions<PostModel> options = queryParams.GetFindOptions();
 
-                IReadOnlyList<PostModel> posts = await _postService.GetAllAsync(filter, options);
+                IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(filter, options);
 
                 if (!posts.Any()) return NotFound(new ProblemDetails {
                     Status = StatusCodes.Status404NotFound,
@@ -40,8 +44,8 @@ namespace reichan_api.src.Modules.Posts
                     Instance = HttpContext.Request.Path
                 });
                     
-
-                return Ok(new ApiResponse<IReadOnlyList<PostModel>> { 
+                
+                return Ok(new ApiResponse<IReadOnlyList<PostResponseDTO>> { 
                     Status = StatusCodes.Status200OK, 
                     Data = posts 
                 });
@@ -61,8 +65,12 @@ namespace reichan_api.src.Modules.Posts
         }
 
         [HttpGet("{id}")]
-        [Produces("application/json")]
-        public async Task<ActionResult<ApiResponse<PostResponseDTO>>> GetPostById( string id ) {
+        [EndpointDescription("Retrieves a post based on the provided ID.")]
+        [ProducesResponseType(typeof(PostResponseDTO), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, "application/problem+json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError, "application/problem+json")]
+
+        public async Task<ActionResult> GetPostById( [FromRoute] string id ) {
 
             try
             {
@@ -71,7 +79,7 @@ namespace reichan_api.src.Modules.Posts
                 if (post == null ) return NotFound(new ProblemDetails {
                     Status = StatusCodes.Status404NotFound,
                     Title = "Post Not Found",
-                    Detail = $"Post Not Found by ID: '${id}'.",
+                    Detail = $"Post with ID '{id}' was not found.",
                     Instance = HttpContext.Request.Path
                 });
 
@@ -94,8 +102,11 @@ namespace reichan_api.src.Modules.Posts
         }
 
         [HttpPatch("{id}/{vote}")]
-        [Produces("application/json")]
-        public async Task<ActionResult<ApiResponse<string>>> Vote( string id, bool vote ) {
+        [EndpointDescription("Vote for a post based on the providade ID and kind of vote.")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent, "application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, "application/problem+json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError, "application/problem+json")]
+        public async Task<ActionResult> Vote( [FromRoute] string id, [FromRoute] bool vote ) {
             try
             {
                 bool voted = await _postService.VoteAsync(id, vote);
@@ -109,10 +120,7 @@ namespace reichan_api.src.Modules.Posts
                     });
                 }
 
-                return Ok( new ApiResponse<string> { 
-                    Status = StatusCodes.Status200OK, 
-                    Data = "Voted"
-                });
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -128,16 +136,15 @@ namespace reichan_api.src.Modules.Posts
         }
 
         [HttpPost]      
-        [Produces("application/json")]  
-        public async Task<ActionResult<ApiResponse<string>>> Create( [FromBody] PostDto postDto ) {
+        [EndpointDescription("Create a post based on the body formed.")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created, "application/json")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError, "application/problem+json")]
+        public async Task<ActionResult> Create( [FromBody] PostDto postDto ) {
             try
             {
                 bool created = await _postService.CreateAsync( postDto );
 
-                return StatusCode(201,  new ApiResponse<string> { 
-                    Status = StatusCodes.Status201Created, 
-                    Data = "Created"
-                });
+                return Created();
             }
             catch (Exception ex)
             {

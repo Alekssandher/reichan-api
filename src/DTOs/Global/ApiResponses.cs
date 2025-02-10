@@ -4,4 +4,5 @@ namespace reichan_api.src.DTOs.Global {
         public int Status { get; set; }
         public T? Data { get; set; }
     }
+    
 }

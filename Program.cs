@@ -1,4 +1,5 @@
 using AspNetCoreRateLimit;
+using Scalar.AspNetCore;
 
 namespace reichan_api {
     public class Program
@@ -10,16 +11,20 @@ namespace reichan_api {
             builder.Services.RegisterServices(builder.Configuration);
             builder.Services.RegisterFilters();
             builder.Services.AddControllers();
-           
-
+            builder.Services.AddOpenApi();
 
             var app = builder.Build();
-            
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi()
+                    .CacheOutput();
+                app.MapScalarApiReference();
+            }
             app.UseRouting();
             app.UseSession();
             app.UseIpRateLimiting();
             app.UseCors("AllowWithCredentials");
-
+            
             app.MapControllers();
 
             app.Run();

@@ -1,6 +1,5 @@
 using AspNetCoreRateLimit;
 using DotNetEnv;
-using reichan_api.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
@@ -42,7 +41,19 @@ public static class ServicesRegistration
         {
             options.Limits.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
         });
-
+        services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer((document, context, cancellationToken) =>
+            {
+                document.Info = new()
+                {
+                    Title = "Reichan API",
+                    Version = "v1",
+                    Description = "API for interacting with a web forum."
+                };
+                return Task.CompletedTask;
+            });
+        });
         // Session
         services.AddDistributedMemoryCache();
         services.AddSession(options =>
@@ -97,12 +108,12 @@ public static class ServicesRegistration
         services.AddControllers(options =>
         {
             options.Filters.Add(new RequestSizeLimitAttribute(5 * 1024 * 1024)); // 5MB
-            options.Filters.Add<ModelStateCheck>();
+            //options.Filters.Add<ModelStateCheck>();
     
-        })  
-        .ConfigureApiBehaviorOptions(options =>
-        {
-            options.SuppressModelStateInvalidFilter = true;
-        });
+        }); 
+        // .ConfigureApiBehaviorOptions(options =>
+        // {
+        //     options.SuppressModelStateInvalidFilter = true;
+        // });
     }
 }

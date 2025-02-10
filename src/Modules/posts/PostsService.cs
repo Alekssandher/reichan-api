@@ -16,11 +16,29 @@ namespace reichan_api.src.Modules.Posts {
            
         }
 
-        public async Task<IReadOnlyList<PostModel>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options )
+        public async Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options )
         {            
-            IReadOnlyList<PostModel> posts = await _postsCollection.Find(filter).Sort(options.Sort).Skip(options.Skip).Limit(options.Limit).ToListAsync();
-            
+            ProjectionDefinition<PostModel, PostResponseDTO> projection = Builders<PostModel>.Projection.Expression(post => new PostResponseDTO
+            {
+                Id = post.Id!,
+                Title = post.Title,
+                Content = post.Content,
+                Author = post.Author,
+                Image = post.Image,
+                Category = post.Category,
+                CreatedAt = post.CreatedAt
+            });
+
+            IReadOnlyList<PostResponseDTO> posts = await _postsCollection
+                .Find(filter)
+                .Sort(options.Sort)
+                .Skip(options.Skip)
+                .Limit(options.Limit)
+                .Project(projection) 
+                .ToListAsync();
+
             return posts;
+           
         }
 
         public async Task<PostResponseDTO?> GetByIdAsync( string id ) {

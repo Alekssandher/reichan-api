@@ -5,7 +5,7 @@ using reichan_api.src.Models.Posts;
 namespace reichan_api.src.Interfaces {
     public interface IPostService 
     {
-        Task<IReadOnlyList<PostModel>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options );
+        Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options );
         Task<PostResponseDTO?> GetByIdAsync( string id );
         Task<bool> VoteAsync( string id, bool vote );
         Task<bool> CreateAsync( PostDto postDto );
