@@ -1,28 +1,28 @@
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using ReichanApi.DTOs;
-using ReichanApi.Interfaces;
-using ReichanApi.Mappers;
-using ReichanApi.Models;
-using ReichanApi.QueryParams;
+using reichan_api.src.Models.Posts;
+using reichan_api.src.QueryParams;
+using reichan_api.src.Interfaces;
+using reichan_api.src.DTOs.Posts;
+using reichan_api.src.DTOs.Global;
 
-namespace ReichanApi.Controllers
+namespace reichan_api.src.Modules.Posts
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase {
         private readonly IPostService _postService;
+        private readonly ILogger<PostsController> _logger;
 
-        public PostsController(IPostService postService)
+        public PostsController(IPostService postService, ILogger<PostsController> logger)
         {
             _postService = postService;
+            _logger = logger;
         }
 
         [HttpGet]
         [Produces("application/json")]
-        public async Task<ActionResult<PostsResponseDTO>> GetPosts([FromQuery] PostQueryParams queryParams)
+        public async Task<ActionResult<ApiResponse<IReadOnlyList<PostModel>>>> GetPosts([FromQuery] PostQueryParams queryParams)
         {
 
             try
@@ -40,14 +40,14 @@ namespace ReichanApi.Controllers
                 });
                     
 
-                return Ok(new PostsResponseDTO { 
+                return Ok(new ApiResponse<IReadOnlyList<PostModel>> { 
                     Status = StatusCodes.Status200OK, 
                     Data = posts 
                 });
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex, "An unexpected error occurred while fetching posts.");
 
                 return StatusCode(500, new ProblemDetails {
                     Status = StatusCodes.Status500InternalServerError,
@@ -61,35 +61,69 @@ namespace ReichanApi.Controllers
 
         [HttpGet("{id}")]
         [Produces("application/json")]
-        public async Task<ActionResult<PostResponseWrapperDTO>> GetPostById( string id ) {
+        public async Task<ActionResult<ApiResponse<PostResponseDTO>>> GetPostById( string id ) {
 
-            if (!ObjectId.TryParse(id, out _))
+            try
             {
-                return BadRequest(new ProblemDetails
-                {
-                    Status = StatusCodes.Status400BadRequest,
-                    Title = "Invalid ID Format",
-                    Detail = $"The provided ID '{id}' is not a valid MongoDB ObjectId.",
+                PostResponseDTO? post = await _postService.GetByIdAsync(id);
+            
+                if (post == null ) return NotFound(new ProblemDetails {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "Post Not Found",
+                    Detail = $"Post Not Found by ID: '${id}'.",
+                    Instance = HttpContext.Request.Path
+                });
+
+                return Ok( new ApiResponse<PostResponseDTO> { 
+                    Status = StatusCodes.Status200OK, 
+                    Data = post
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while fetching post.");
+
+                return StatusCode(500, new ProblemDetails {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Internal error",
+                    Detail = "Something went wrong at our side.",
                     Instance = HttpContext.Request.Path
                 });
             }
+        }
 
+        [HttpPatch("{id}/{vote}")]
+        [Produces("application/json")]
+        public async Task<ActionResult<ApiResponse<string>>> VotePost( string id, bool vote ) {
+            try
+            {
+                bool voted = await _postService.VotePostAsync(id, vote);
 
-            PostModel? post = await _postService.GetByIdAsync(id);
-            
-            if (post == null ) return NotFound(new ProblemDetails {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Post Not Found",
-                Detail = $"Post Not Found by ID: '${id}'.",
-                Instance = HttpContext.Request.Path
-            });
+                if(!voted) {
+                    return NotFound(new ProblemDetails {
+                        Status = StatusCodes.Status404NotFound,
+                        Title = "Post Not Found",
+                        Detail = $"Post Not Found by ID: '${id}'.",
+                        Instance = HttpContext.Request.Path
+                    });
+                }
 
-            PostResponseDTO postDto = post.ToDto();
+                return Ok( new ApiResponse<string> { 
+                    Status = StatusCodes.Status200OK, 
+                    Data = "Voted"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while fetching posts.");
 
-            return Ok( new PostResponseWrapperDTO { 
-                Status = StatusCodes.Status200OK, 
-                Post = postDto
-            });
+                return StatusCode(500, new ProblemDetails {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Internal error",
+                    Detail = "Something went wrong at our side.",
+                    Instance = HttpContext.Request.Path
+                });
+            }
         }
 
     }

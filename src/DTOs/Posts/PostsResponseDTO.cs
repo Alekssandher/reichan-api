@@ -1,4 +1,4 @@
-using ReichanApi.Models;
+using reichan_api.src.Models.Posts;
 
 namespace ReichanApi.DTOs {
     public class PostsResponseDTO

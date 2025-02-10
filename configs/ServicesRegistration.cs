@@ -4,9 +4,9 @@ using FiltersChangeDefaultReturnErrors.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
-using ReichanApi.Interfaces;
-using ReichanApi.Models;
-using ReichanApi.Services; 
+using reichan_api.src.Interfaces;
+using reichan_api.src.Models.Posts;
+using reichan_api.src.Modules.Posts;
 
 public static class ServicesRegistration
 {

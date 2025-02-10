@@ -1,4 +1,4 @@
-namespace ReichanApi.DTOs
+namespace reichan_api.src.DTOs.Posts
 {
     public class PostResponseDTO {
         public required string Id { get; set; }
@@ -11,7 +11,7 @@ namespace ReichanApi.DTOs
         public DateTime CreatedAt { get; set; }
         public string? Signature { get; set; }
         public bool Active { get; set; }
-        public int Upvotes { get; set; }
+        public int UpVotes { get; set; }
         public int DownVotes { get; set; }
     }
 }

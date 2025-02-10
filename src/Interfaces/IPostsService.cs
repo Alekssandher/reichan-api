@@ -1,14 +1,14 @@
 using MongoDB.Driver;
-using ReichanApi.Models;
-using ReichanApi.QueryParams;
+using reichan_api.src.DTOs.Posts;
+using reichan_api.src.Models.Posts;
 
-namespace ReichanApi.Interfaces {
+namespace reichan_api.src.Interfaces {
     public interface IPostService 
     {
         Task<IReadOnlyList<PostModel>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options );
-        Task<PostModel?> GetByIdAsync( string id );
-        // Task VotePostAsync(int kindVote, string id);
-        // Task CreateAsync(CreatePostDto postDto);
+        Task<PostResponseDTO?> GetByIdAsync( string id );
+        Task<bool> VotePostAsync( string id, bool vote );
+        //Task CreateAsync(PostDto postDto);
         // Task CreateSignedAsync(CreateSignedPostDto postDto);
     }
 }

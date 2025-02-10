@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ReichanApi.Models {
+namespace reichan_api.src.Models.Posts {
     public class PostModel 
     {
         [BsonId] 

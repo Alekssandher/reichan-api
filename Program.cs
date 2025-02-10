@@ -1,6 +1,6 @@
 using AspNetCoreRateLimit;
 
-namespace ReichanApi.Startup {
+namespace reichan_api {
     public class Program
     {
         public static void Main(string[] args)

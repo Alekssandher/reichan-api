@@ -1,8 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ReichanApi.Models;
+using reichan_api.src.Models.Posts;
 
-namespace ReichanApi.QueryParams {
+namespace reichan_api.src.QueryParams {
     public class PostQueryParams {
     private int _limit = 20;
     private int _skip = 0;
@@ -49,7 +49,8 @@ namespace ReichanApi.QueryParams {
     }
 
     private string SanitizeInput(string input) {
-    return input.Replace("$", "").Replace("{", "").Replace("}", "").Trim();
+        
+        return input.Replace("$", "").Replace("{", "").Replace("}", "").Trim();
     }
 }
 }

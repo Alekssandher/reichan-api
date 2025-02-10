@@ -1,5 +1,5 @@
-using ReichanApi.DTOs;
-using ReichanApi.Models;
+using reichan_api.src.DTOs.Posts;
+using reichan_api.src.Models.Posts;
 
 namespace ReichanApi.Mappers {
     public static class PostMapper
@@ -16,7 +16,7 @@ namespace ReichanApi.Mappers {
                 Image = post.Image,
                 Category = post.Category,
                 Signature = post.Signature,
-                Upvotes = post.UpVotes,
+                UpVotes = post.UpVotes,
                 DownVotes = post.DownVotes
             };
         }
@@ -33,7 +33,7 @@ namespace ReichanApi.Mappers {
                 Image = postDto.Image,
                 Category = postDto.Category,
                 Signature = postDto.Signature,
-                UpVotes = postDto.Upvotes,
+                UpVotes = postDto.UpVotes,
                 DownVotes = postDto.DownVotes
             };
         }
