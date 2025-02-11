@@ -20,6 +20,7 @@ namespace reichan_api {
                     .CacheOutput();
                 app.MapScalarApiReference();
             }
+            // app.UseHttpsRedirection();
             app.UseRouting();
             app.UseSession();
             app.UseIpRateLimiting();

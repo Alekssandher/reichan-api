@@ -28,7 +28,7 @@ public static class ServicesRegistration
 
             options.AddPolicy("AllowWithCredentials", builder =>
             {
-                builder.WithOrigins("https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080")
+                builder.WithOrigins("https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080", "http://localhost:6565")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials(); 
@@ -43,6 +43,8 @@ public static class ServicesRegistration
         services.Configure<KestrelServerOptions>(options =>
         {
             options.Limits.MaxRequestBodySize = 1 * 1024 * 1024; // 1 MB
+            options.Limits.MaxConcurrentConnections = 20000;
+            
         });
         services.AddOpenApi(options =>
         {
@@ -78,7 +80,7 @@ public static class ServicesRegistration
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
         // Configs Database
-        var databaseConfig = new DatabaseConfig
+        DatabaseConfig databaseConfig = new DatabaseConfig
         {
             DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME") ?? "default_database",
             DatabaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ?? "mongodb://localhost:27017",
@@ -88,16 +90,24 @@ public static class ServicesRegistration
         };
     
         services.AddSingleton(databaseConfig);
-        services.AddSingleton<IMongoClient>(_ => new MongoClient(databaseConfig.DatabaseUrl));
+        services.AddSingleton<IMongoClient>(_ => 
+        {
+            MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl(databaseConfig.DatabaseUrl));
+            settings.MaxConnectionPoolSize = 500;  
+            settings.MinConnectionPoolSize = 50;  
+            settings.WaitQueueTimeout = TimeSpan.FromSeconds(300);  
+            return new MongoClient(settings);
+        });
         services.AddSingleton<IMongoDatabase>(sp =>
             sp.GetRequiredService<IMongoClient>().GetDatabase(databaseConfig.DatabaseName)
         );
-        services.AddScoped<IMongoCollection<PostModel>>(sp =>
+        services.AddSingleton<IMongoCollection<PostModel>>(sp =>
         {
-            var database = sp.GetRequiredService<IMongoDatabase>();
-            var databaseConfig = sp.GetRequiredService<DatabaseConfig>();
+            IMongoDatabase database = sp.GetRequiredService<IMongoDatabase>();
+            DatabaseConfig databaseConfig = sp.GetRequiredService<DatabaseConfig>();
             return database.GetCollection<PostModel>(databaseConfig.PostsCollection);
         });
+
 
     
         services.AddScoped<IPostService, PostsService>();

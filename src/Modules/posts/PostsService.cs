@@ -8,12 +8,26 @@ using reichan_api.src.DTOs.Posts;
 namespace reichan_api.src.Modules.Posts {
     public class PostsService : IPostService 
     {
+       
         private readonly IMongoCollection<PostModel> _postsCollection;
 
-        public PostsService(IMongoCollection<PostModel> postsCollection)
+        public PostsService(IMongoDatabase database)
         {
-            _postsCollection = postsCollection;
-           
+            _postsCollection = database.GetCollection<PostModel>("posts");
+            CreateIndexes();
+        }
+
+        private void CreateIndexes()
+        {
+            IndexKeysDefinition<PostModel> indexKeys = Builders<PostModel>.IndexKeys
+                .Ascending(post => post.AuthorPubKey)
+                .Ascending(post => post.Author)
+                .Ascending(post => post.Category)
+                .Descending(post => post.CreatedAt); 
+            
+            CreateIndexModel<PostModel> indexModel = new CreateIndexModel<PostModel>(indexKeys, new CreateIndexOptions { Unique = false });
+
+            _postsCollection.Indexes.CreateOne(indexModel);
         }
 
         public async Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( FilterDefinition<PostModel> filter, FindOptions<PostModel> options )
@@ -54,16 +68,16 @@ namespace reichan_api.src.Modules.Posts {
 
         public async Task<bool> VoteAsync ( string id, bool vote ) {
 
-            FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Eq("_id", ObjectId.Parse(id));
-
             string kindVote = vote ? "UpVotes" : "DownVotes";
 
             UpdateDefinition<PostModel> update = Builders<PostModel>.Update.Inc(kindVote, 1);
 
-            UpdateResult? result = await _postsCollection.UpdateOneAsync(filter, update);
+            UpdateResult? result = await _postsCollection.UpdateOneAsync(
+                Builders<PostModel>.Filter.Eq("_id", ObjectId.Parse(id)), 
+                update
+            );
 
-            if (result.ModifiedCount == 0) return false; 
-            else return true;
+            return result.ModifiedCount > 0;
             
         }
 
