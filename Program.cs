@@ -14,7 +14,7 @@ namespace reichan_api {
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("ENABLE_SWAGGER") == "true")
             {
                 app.MapOpenApi()
                     .CacheOutput();

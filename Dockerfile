@@ -14,6 +14,6 @@ WORKDIR /app
 
 COPY --from=build /out .
 
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "reichan-api.dll"]
