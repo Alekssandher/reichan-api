@@ -24,7 +24,7 @@ namespace reichan_api.src.Modules.Posts {
                 Title = post.Title,
                 Content = post.Content,
                 Author = post.Author,
-                Image = post.Image,
+                Media = post.Media,
                 Category = post.Category,
                 CreatedAt = post.CreatedAt
             });
@@ -43,12 +43,7 @@ namespace reichan_api.src.Modules.Posts {
 
         public async Task<PostResponseDTO?> GetByIdAsync( string id ) {
 
-            if (string.IsNullOrWhiteSpace(id) || !ObjectId.TryParse(id, out ObjectId objectId))
-            {
-                return null;
-            }
-            
-            FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Eq("_id", objectId);
+            FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Eq("_id", ObjectId.Parse(id));
 
             PostModel post = await _postsCollection.Find(filter).FirstOrDefaultAsync();
 
@@ -58,10 +53,6 @@ namespace reichan_api.src.Modules.Posts {
         }
 
         public async Task<bool> VoteAsync ( string id, bool vote ) {
-            if ( string.IsNullOrWhiteSpace(id) || !ObjectId.TryParse(id, out ObjectId objectId))
-            {
-                return false;
-            }
 
             FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Eq("_id", ObjectId.Parse(id));
 

@@ -1,8 +1,11 @@
 using AspNetCoreRateLimit;
 using DotNetEnv;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
+using reichan_api.Filters;
 using reichan_api.src.Interfaces;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Modules.Posts;
@@ -19,7 +22,7 @@ public static class ServicesRegistration
             options.AddDefaultPolicy(builder =>
             {
                 builder.AllowAnyOrigin()  
-                    .WithMethods("GET", "POST") 
+                    .WithMethods("GET", "POST", "PATCH") 
                     .WithHeaders("X-CaptchaCode"); 
             });
 
@@ -54,6 +57,7 @@ public static class ServicesRegistration
                 return Task.CompletedTask;
             });
         });
+
         // Session
         services.AddDistributedMemoryCache();
         services.AddSession(options =>
@@ -97,6 +101,8 @@ public static class ServicesRegistration
 
     
         services.AddScoped<IPostService, PostsService>();
+
+        services.AddHttpContextAccessor();
     }
 
     public static void RegisterFilters(this IServiceCollection services)
@@ -104,6 +110,7 @@ public static class ServicesRegistration
 
         services.AddScoped<ValidateCategory>();
         services.AddScoped<ValidateCaptcha>();
+        services.AddScoped<ValidateIdAttribute>();
         
         services.AddControllers(options =>
         {
@@ -111,6 +118,9 @@ public static class ServicesRegistration
             //options.Filters.Add<ModelStateCheck>();
     
         }); 
+        services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+        services.AddValidatorsFromAssemblyContaining<PostDtoValidator>();
+        
         // .ConfigureApiBehaviorOptions(options =>
         // {
         //     options.SuppressModelStateInvalidFilter = true;
