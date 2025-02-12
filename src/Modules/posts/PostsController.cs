@@ -24,6 +24,9 @@ namespace reichan_api.src.Modules.Posts
 
         
         [HttpGet]
+        [ServiceFilter(typeof(ValidateQueryAttribute))]
+
+        // Documentation
         [EndpointName("GetPosts")]
         [EndpointSummary("GetPosts")]
         [EndpointDescription("Retrieves a list of posts based on the provided query parameters.")]
@@ -50,13 +53,13 @@ namespace reichan_api.src.Modules.Posts
 
         [HttpGet("{id}")]
         [ServiceFilter(typeof(ValidateIdAttribute))]
-
         // Documentation
         [EndpointName("GetPostById")]
         [EndpointSummary("GetPostById")]
         [EndpointDescription("Retrieves a post based on the provided ID.")]
         [ProducesResponseType(typeof(PostResponseDTO), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
+        [ProducesResponseType(typeof(ContentTooLarge), StatusCodes.Status413RequestEntityTooLarge, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
 
         public async Task<ActionResult> GetPostById( [FromRoute] string id ) {
@@ -81,6 +84,7 @@ namespace reichan_api.src.Modules.Posts
         [EndpointSummary("VotePost")]
         [EndpointDescription("Vote for a post based on the providade ID and kind of vote.")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent, "application/json")]
+        [ProducesResponseType(typeof(ContentTooLarge), StatusCodes.Status413RequestEntityTooLarge, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]

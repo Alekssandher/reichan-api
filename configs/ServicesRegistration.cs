@@ -123,6 +123,7 @@ public static class ServicesRegistration
         services.AddScoped<ValidateCategory>();
         services.AddScoped<ValidateCaptcha>();
         services.AddScoped<ValidateIdAttribute>();
+        services.AddScoped<ValidateQueryAttribute>();
         
         services.AddControllers(options =>
         {
