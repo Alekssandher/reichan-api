@@ -19,7 +19,7 @@ namespace reichan_api.src.Modules.Posts {
         private void CreateIndexes()
         {
             IndexKeysDefinition<PostModel> indexKeys = Builders<PostModel>.IndexKeys
-                .Ascending(post => post.AuthorPubKey)
+                .Ascending(post => post.PublicId)
                 .Ascending(post => post.Author)
                 .Ascending(post => post.Category)
                 .Descending(post => post.CreatedAt); 

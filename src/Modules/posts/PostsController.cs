@@ -85,7 +85,7 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Vote( [FromRoute] string id, [FromRoute] bool vote ) {
-
+            
             if (!await _postService.VoteAsync(id, vote))
             {
                 return NotFound(new NotFound("Post Not Found", $"Post Not Found by ID: {id}."));

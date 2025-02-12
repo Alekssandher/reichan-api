@@ -2,6 +2,7 @@ using AspNetCoreRateLimit;
 using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using IdGen.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
@@ -108,7 +109,7 @@ public static class ServicesRegistration
             DatabaseConfig databaseConfig = sp.GetRequiredService<DatabaseConfig>();
             return database.GetCollection<PostModel>(databaseConfig.PostsCollection);
         });
-
+        services.AddIdGen(123);
 
     
         services.AddScoped<IPostService, PostsService>();

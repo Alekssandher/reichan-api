@@ -108,4 +108,32 @@ namespace reichan_api.src.DTOs.Global {
         }
 
     }
+
+    public class RequestTooLong : ErrorDetails {
+        private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+
+        [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.414")]
+        public override string Type { get; init; }
+
+        [DefaultValue(414)]
+        public override int Status {get; init; }
+
+        [DefaultValue("Request Too Long")]
+        public override string Title { get; init; }
+
+        [DefaultValue("Too Long Requisition.")]
+        public override string Detail { get; init; }
+
+        [DefaultValue("/api/endpointPath/...")]
+        public override string Instance { get; init; }
+
+        public RequestTooLong(string title, string detail)
+        {
+            Type = "https://datatracker.ietf.org/doc/html/rfc9110#status.414";
+            Status = StatusCodes.Status414RequestUriTooLong;
+            Title = title ?? "Request Too Long";
+            Detail = detail ?? "Too Long Requisition.";
+            Instance = "Unknown";
+        }
+    }
 }

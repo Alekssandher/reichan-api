@@ -10,8 +10,8 @@ namespace reichan_api.Filters {
     {
         private static readonly BadRequestObjectResult EmptyIdError = new( new BadRequest("Empty ID", "You must provide an ID.") );
         private static readonly BadRequestObjectResult InvalidCharError =  new( new BadRequest("Invalid ID", "The provided ID contains invalid characters.") );
-        private static readonly BadRequestObjectResult InvalidGuidError =  new( new BadRequest("Invalid ID", "The provided ID is not valid.") );        
-        private static readonly Regex _validIdRegex = new(@"^[a-zA-Z0-9-]+$", RegexOptions.Compiled);
+        private static readonly BadRequestObjectResult IdTooLong =  new( new RequestTooLong("Too Long ID", "The provided ID is too long.") );        
+        private static readonly Regex _validIdRegex = new(@"^\d+$", RegexOptions.Compiled);
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -33,11 +33,10 @@ namespace reichan_api.Filters {
                     return;
                 }
 
-                if(!Guid.TryParse(id, out _)) {
-                    context.Result = InvalidGuidError;
+                if(id.Length > 20) {
+                    context.Result = IdTooLong;
                     return;
                 }
-               
             }
 
             
