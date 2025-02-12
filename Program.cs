@@ -18,14 +18,15 @@ namespace reichan_api {
             {
                 app.MapOpenApi()
                     .CacheOutput();
-                app.MapScalarApiReference();
+                app.MapScalarApiReference("/docs");
             }
+        
             // app.UseHttpsRedirection();
             app.UseRouting();
             app.UseSession();
             app.UseIpRateLimiting();
             app.UseCors("AllowWithCredentials");
-            
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.MapControllers();
 
             app.Run();

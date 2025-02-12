@@ -8,7 +8,11 @@ using reichan_api.src.DTOs.Global;
 namespace reichan_api.Filters {
     public class ValidateIdAttribute : IActionFilter
     {
-        private static readonly Regex _validIdRegex = new(@"^[a-zA-Z0-9]+$", RegexOptions.Compiled);
+        private static readonly BadRequestObjectResult EmptyIdError = new( new BadRequest("Empty ID", "You must provide an ID.") );
+        private static readonly BadRequestObjectResult InvalidCharError =  new( new BadRequest("Invalid ID", "The provided ID contains invalid characters.") );
+        private static readonly BadRequestObjectResult InvalidGuidError =  new( new BadRequest("Invalid ID", "The provided ID is not valid.") );        
+        private static readonly Regex _validIdRegex = new(@"^[a-zA-Z0-9-]+$", RegexOptions.Compiled);
+
         public void OnActionExecuting(ActionExecutingContext context)
         {
             
@@ -16,19 +20,23 @@ namespace reichan_api.Filters {
             {
                 string? id = value as string;
 
-                BadRequest? error = id switch
+                if (string.IsNullOrEmpty(id))
                 {
-                    _ when string.IsNullOrEmpty(id) => new BadRequest("Empty ID", "You must provide an ID."),
-                    _ when !_validIdRegex.IsMatch(id) => new BadRequest("Invalid ID", "The provided ID contains invalid characters."),
-                    _ when !ObjectId.TryParse(id, out _) => new BadRequest("Invalid ID", "The provided ID is not valid."),
-                    _ => null
-                };
-
-                if (error != null)
-                {
-                    context.Result = new BadRequestObjectResult(error);
+                    context.Result = EmptyIdError;
+                    return;
                 }
 
+                if (!_validIdRegex.IsMatch(id))
+                {
+
+                    context.Result = InvalidCharError;
+                    return;
+                }
+
+                if(!Guid.TryParse(id, out _)) {
+                    context.Result = InvalidGuidError;
+                    return;
+                }
                
             }
 

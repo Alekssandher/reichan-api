@@ -1,7 +1,7 @@
 namespace reichan_api.src.DTOs.Posts
 {
     public class PostResponseDTO {
-        public required string Id { get; init; }
+        public required Guid Id { get; init; }
         public string? AuthorPubKey { get; init; }
         public required string Title { get; init; }
         public required string Content { get; init; }

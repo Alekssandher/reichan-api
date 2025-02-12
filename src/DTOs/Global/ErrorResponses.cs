@@ -15,8 +15,8 @@ namespace reichan_api.src.DTOs.Global {
         [Description("Detailed error description.")]
         public new abstract string Detail { get; init; }
 
-        // [Description("URI que referencia mais detalhes sobre o erro.")]
-        // public new required string Type { get; set; }
+        [Description("URI with an error reference.")]
+        public new abstract string Type { get; init; }
 
         [Description("Error instance ID.")]
         public new abstract string Instance { get; init; }
@@ -25,6 +25,9 @@ namespace reichan_api.src.DTOs.Global {
     public class InternalError : ErrorDetails {
 
         private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+
+        [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.500")]
+        public override string Type { get; init; }
 
         [DefaultValue(500)]
         public override int Status { get; init; }
@@ -39,6 +42,7 @@ namespace reichan_api.src.DTOs.Global {
         public override string Instance { get; init; }
         public InternalError()
         {
+            Type = "https://datatracker.ietf.org/doc/html/rfc9110#status.500";
             Status = StatusCodes.Status500InternalServerError;
             Title = "Internal error";
             Detail = "Something went wrong at our side";
@@ -48,6 +52,9 @@ namespace reichan_api.src.DTOs.Global {
     public class BadRequest : ErrorDetails {
 
         private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+        
+        [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.400")]
+        public override string Type { get; init; }
 
         [DefaultValue(400)]
         public override int Status {get; init; }
@@ -55,7 +62,7 @@ namespace reichan_api.src.DTOs.Global {
         [DefaultValue("Bad Request")]
         public override string Title { get; init; }
 
-        [DefaultValue("Request badly formed.")]
+        [DefaultValue("Request Badly Formed.")]
         public override string Detail { get; init; }
 
         [DefaultValue("/api/endpointPath/")]
@@ -63,9 +70,10 @@ namespace reichan_api.src.DTOs.Global {
 
         public BadRequest(string title, string detail)
         {
+            Type = "https://datatracker.ietf.org/doc/html/rfc9110#status.400";
             Status = StatusCodes.Status400BadRequest;
-            Title = title;
-            Detail = detail;
+            Title = title ?? "Bad Request";
+            Detail = detail ?? "Request Badly Formed";
             Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "Unknown";
         }
 
@@ -74,6 +82,9 @@ namespace reichan_api.src.DTOs.Global {
     public class NotFound : ErrorDetails {
 
         private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+
+        [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.404")]
+        public override string Type { get; init; }
 
         [DefaultValue(404)]
         public override int Status {get; init; }
@@ -89,9 +100,10 @@ namespace reichan_api.src.DTOs.Global {
 
         public NotFound(string title, string detail)
         {
+            Type = "https://datatracker.ietf.org/doc/html/rfc9110#status.404";
             Status = StatusCodes.Status404NotFound;
-            Title = title;
-            Detail = detail;
+            Title = title ?? "Not Found";
+            Detail = detail ?? "We Couldn't Find Your Request.";
             Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "Unknown";
         }
 

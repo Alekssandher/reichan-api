@@ -7,6 +7,9 @@ namespace reichan_api.src.Models.Posts {
         [BsonId] 
         [BsonRepresentation(BsonType.ObjectId)] 
         public string? Id { get; set; }
+        
+        [BsonRepresentation(BsonType.String)] 
+        public Guid PublicId { get; set; } = Guid.NewGuid();
         public string? AuthorPubKey { get; set; }
         public required string Title { get; set; }
         public required string Content { get; set; }

@@ -15,6 +15,7 @@ namespace reichan_api.src.Modules.Posts
         private readonly IPostService _postService;
         private readonly ILogger<PostsController> _logger;
 
+        private readonly InternalError internalError = new();
         public PostsController(IPostService postService, ILogger<PostsController> logger)
         {
             _postService = postService;
@@ -31,30 +32,20 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
 
         public async Task<ActionResult> GetPosts([FromQuery] PostQueryParams queryParams)
-        {
+        {    
+            FilterDefinition<PostModel> filter = queryParams.GetFilter();
+            FindOptions<PostModel> options = queryParams.GetFindOptions();
 
-            try
-            {
-                FilterDefinition<PostModel> filter = queryParams.GetFilter();
-                FindOptions<PostModel> options = queryParams.GetFindOptions();
-
-                IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(filter, options);
+            IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(filter, options);
+            
+            if (!posts.Any()) return NotFound(new NotFound("Posts Not Found", "There are no posts mathing the query.") );
                 
-                if (!posts.Any()) return NotFound(new NotFound("Posts Not Found", "There are no posts mathing the query.") );
-                    
-                
-                return Ok(new ApiResponse<IReadOnlyList<PostResponseDTO>> { 
-                    Status = StatusCodes.Status200OK, 
-                    Data = posts 
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred while fetching posts.");
-
-                return StatusCode(500, new InternalError());
-
-            }
+            
+            return Ok(new ApiResponse<IReadOnlyList<PostResponseDTO>> { 
+                Status = StatusCodes.Status200OK, 
+                Data = posts 
+            });
+            
         }
 
         [HttpGet("{id}")]
@@ -70,23 +61,15 @@ namespace reichan_api.src.Modules.Posts
 
         public async Task<ActionResult> GetPostById( [FromRoute] string id ) {
 
-            try
-            {
-                PostResponseDTO? post = await _postService.GetByIdAsync(id);
+            PostResponseDTO? post = await _postService.GetByIdAsync(id);
 
-                if ( post == null ) return NotFound(new NotFound("Post Not Found", $"Post with ID '{id}' was not found."));
-
-                return Ok( new ApiResponse<PostResponseDTO> { 
-                    Status = StatusCodes.Status200OK, 
-                    Data = post
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred while fetching post.");
-
-                return StatusCode(500, new InternalError() );
-            }
+            if (post == null) return NotFound(new NotFound("Post Not Found", $"Post with ID '{id}' was not found."));
+             
+            return Ok( new ApiResponse<PostResponseDTO> { 
+                Status = StatusCodes.Status200OK, 
+                Data = post
+            });
+            
         }
 
         [HttpPatch("{id}/{vote}")]
@@ -102,20 +85,14 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Vote( [FromRoute] string id, [FromRoute] bool vote ) {
-            try
-            {
-                bool voted = await _postService.VoteAsync(id, vote);
 
-                if(!voted) return NotFound( new NotFound("Post Not Found", $"Post Not Found by ID: '${id}'."));
-                
-                return NoContent();
-            }
-            catch (Exception ex)
+            if (!await _postService.VoteAsync(id, vote))
             {
-                _logger.LogError(ex, "An unexpected error occurred while fetching posts.");
-
-                return StatusCode(500, new InternalError());
+                return NotFound(new NotFound("Post Not Found", $"Post Not Found by ID: {id}."));
             }
+
+            return NoContent();
+             
         }
 
         [HttpPost]      
@@ -126,18 +103,13 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Create( [FromBody] PostDto PostDto ) {
-            try
-            {
-                bool created = await _postService.CreateAsync( PostDto );
+            
+            bool created = await _postService.CreateAsync( PostDto );
 
-                return Created();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred while fetching posts.");
-
-                return StatusCode(500, new InternalError() );
-            } 
+            return created
+                ? Created()
+                : StatusCode(500, internalError);
+            
         }
 
     }

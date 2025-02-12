@@ -9,7 +9,7 @@ namespace reichan_api.src.Mappers {
         {
             return new PostResponseDTO
             {
-                Id = post.Id!,
+                Id = post.PublicId!,
                 AuthorPubKey = post.AuthorPubKey,
                 Author = post.Author,
                 Title = post.Title,
@@ -28,7 +28,7 @@ namespace reichan_api.src.Mappers {
         {
             return new PostModel
             {
-                Id = postResponseDto.Id,
+                PublicId = postResponseDto.Id,
                 AuthorPubKey = postResponseDto.AuthorPubKey,
                 Author = postResponseDto.Author,
                 Title = postResponseDto.Title,

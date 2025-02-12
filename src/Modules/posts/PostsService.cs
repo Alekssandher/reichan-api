@@ -1,4 +1,3 @@
-using MongoDB.Bson;
 using MongoDB.Driver;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Interfaces;
@@ -34,7 +33,7 @@ namespace reichan_api.src.Modules.Posts {
         {            
             ProjectionDefinition<PostModel, PostResponseDTO> projection = Builders<PostModel>.Projection.Expression(post => new PostResponseDTO
             {
-                Id = post.Id!,
+                Id = post.PublicId,
                 Title = post.Title,
                 Content = post.Content,
                 Author = post.Author,
@@ -57,7 +56,7 @@ namespace reichan_api.src.Modules.Posts {
 
         public async Task<PostResponseDTO?> GetByIdAsync( string id ) {
 
-            FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Eq("_id", ObjectId.Parse(id));
+            FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Eq("PublicId", id);
 
             PostModel post = await _postsCollection.Find(filter).FirstOrDefaultAsync();
 
@@ -73,7 +72,7 @@ namespace reichan_api.src.Modules.Posts {
             UpdateDefinition<PostModel> update = Builders<PostModel>.Update.Inc(kindVote, 1);
 
             UpdateResult? result = await _postsCollection.UpdateOneAsync(
-                Builders<PostModel>.Filter.Eq("_id", ObjectId.Parse(id)), 
+                Builders<PostModel>.Filter.Eq("PublicId", id), 
                 update
             );
 

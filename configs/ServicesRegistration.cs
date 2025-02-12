@@ -9,6 +9,7 @@ using reichan_api.Filters;
 using reichan_api.src.Interfaces;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Modules.Posts;
+using Scalar.AspNetCore;
 
 public static class ServicesRegistration
 {
@@ -52,9 +53,9 @@ public static class ServicesRegistration
             {
                 document.Info = new()
                 {
-                    Title = "Reichan API",
+                    Title = "Reichan API Documentation",
                     Version = "v1",
-                    Description = "API for interacting with a web forum."
+                    Description = "An API to interact with a forum."
                 };
                 return Task.CompletedTask;
             });
@@ -88,7 +89,7 @@ public static class ServicesRegistration
             UsersCollection = Environment.GetEnvironmentVariable("USERS_COLLECTION") ?? "users",
             RepliesCollection = Environment.GetEnvironmentVariable("REPLIES_COLLECTION") ?? "replies"
         };
-    
+
         services.AddSingleton(databaseConfig);
         services.AddSingleton<IMongoClient>(_ => 
         {
