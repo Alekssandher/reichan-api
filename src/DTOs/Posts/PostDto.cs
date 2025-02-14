@@ -16,7 +16,7 @@ namespace reichan_api.src.DTOs.Posts
         public string Content { get; init; }
 
         [Required(ErrorMessage = "Media is required.")]
-        [RegularExpression(@"^[\w,\s-]+\.(jpg|jpeg|png|gif|webpm|mp4|ogg)$", ErrorMessage = "Invalid image or video format.")]
+        [RegularExpression(@"^[\w,\s-]+\.(jpg|jpeg|png|gif|webp|mp4|ogg)$", ErrorMessage = "Invalid image or video format.")]
         [StringLength(65, MinimumLength = 10, ErrorMessage = "Media lenght must be 65 chars or less")]
         [Description("Media name located in the path /api/media/{category}/{fileName}")]
         public string Media { get; init; }

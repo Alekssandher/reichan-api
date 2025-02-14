@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using reichan_api.src.Models.Posts;
 using reichan_api.src.QueryParams;
 using reichan_api.src.Interfaces;
 using reichan_api.src.DTOs.Posts;

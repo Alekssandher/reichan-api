@@ -17,7 +17,7 @@ namespace reichan_api.src.Models.Posts {
         public required string Author { get; init; }
         public DateTime CreatedAt { get; init; }
         public string? Signature { get; init; }
-        public bool Active { get; init; }
+        public bool Active { get; init; } = true;
         public int UpVotes { get; init; }
         public int DownVotes { get; init; }
     }

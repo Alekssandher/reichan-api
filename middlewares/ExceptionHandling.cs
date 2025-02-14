@@ -4,7 +4,7 @@ public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-
+    private static readonly InternalError errorResponse = new();
     public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
@@ -23,8 +23,6 @@ public class ExceptionHandlingMiddleware
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
-
-            InternalError errorResponse = new();
 
             await context.Response.WriteAsJsonAsync(errorResponse);
         }

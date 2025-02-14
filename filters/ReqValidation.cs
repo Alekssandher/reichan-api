@@ -1,8 +1,8 @@
-namespace reichan_api.Filters {
-    using System.Linq.Expressions;
-    using FluentValidation;
-    using reichan_api.src.DTOs.Posts;
+using System.Linq.Expressions;
+using FluentValidation;
+using reichan_api.src.DTOs.Posts;
 
+namespace reichan_api.Filters {
     public class PostDtoValidator : AbstractValidator<PostDto>
     {
         public PostDtoValidator()
@@ -26,7 +26,7 @@ namespace reichan_api.Filters {
         private void ApplyPublicKeyAndSignatureRules(Expression<Func<PostDto, string>> property)
         {
             RuleFor(property)
-                .NotEmpty().WithMessage("{PropertyName} is required.")
+                .NotEmpty().WithMessage("{PropertyName} should be null of filled.")
                 .Matches(@"^.+$").WithMessage("{PropertyName} is invalid.")
                 .When(property => !string.IsNullOrEmpty(property.AuthorPubKey) || !string.IsNullOrEmpty(property.Signature));
         }

@@ -121,8 +121,6 @@ public static class ServicesRegistration
 
     public static void RegisterFilters(this IServiceCollection services)
     {
-
-        services.AddScoped<ValidateCategory>();
         services.AddScoped<ValidateCaptcha>();
         services.AddScoped<ValidateIdAttribute>();
         services.AddScoped<ValidateQueryAttribute>();
