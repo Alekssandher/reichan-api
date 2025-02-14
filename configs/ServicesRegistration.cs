@@ -10,6 +10,7 @@ using reichan_api.Filters;
 using reichan_api.src.Interfaces;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Modules.Posts;
+using reichan_api.src.Repositories;
 using Scalar.AspNetCore;
 
 public static class ServicesRegistration
@@ -113,6 +114,7 @@ public static class ServicesRegistration
 
     
         services.AddScoped<IPostService, PostsService>();
+        services.AddScoped<IPostRepository, PostsRepository>();
 
         services.AddHttpContextAccessor();
     }

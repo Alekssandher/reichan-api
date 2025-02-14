@@ -36,13 +36,10 @@ namespace reichan_api.src.Modules.Posts
 
         public async Task<ActionResult> GetPosts([FromQuery] PostQueryParams queryParams)
         {    
-            FilterDefinition<PostModel> filter = queryParams.GetFilter();
-            FindOptions<PostModel> options = queryParams.GetFindOptions();
-
-            IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(filter, options);
+            
+            IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(queryParams);
             
             if (!posts.Any()) return NotFound(new NotFound("Posts Not Found", "There are no posts mathing the query.") );
-                
             
             return Ok(new ApiResponse<IReadOnlyList<PostResponseDTO>> { 
                 Status = StatusCodes.Status200OK, 
@@ -101,6 +98,7 @@ namespace reichan_api.src.Modules.Posts
 
         [HttpPost]      
         [EndpointName("CreatePost")]
+        
         [EndpointSummary("CreatePost")]
         [EndpointDescription("Create a post based on the body formed.")]
         [ProducesResponseType(typeof(void), StatusCodes.Status201Created, "application/json")]
