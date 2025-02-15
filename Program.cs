@@ -19,8 +19,9 @@ namespace reichan_api {
                 app.MapOpenApi()
                     .CacheOutput();
                 app.MapScalarApiReference("/docs");
+                app.MapHealthChecks("/health");
             }
-        
+
             // app.UseHttpsRedirection();
             app.UseRouting();
             app.UseSession();
@@ -29,6 +30,7 @@ namespace reichan_api {
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.MapControllers();
 
+            
             app.Run();
         }
     }

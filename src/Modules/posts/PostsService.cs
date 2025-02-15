@@ -1,5 +1,4 @@
 using MongoDB.Driver;
-using reichan_api.src.Models.Posts;
 using reichan_api.src.Interfaces;
 using reichan_api.src.Mappers;
 using reichan_api.src.DTOs.Posts;
@@ -15,7 +14,7 @@ namespace reichan_api.src.Modules.Posts {
             _postsRepository = postsRepository;
         }
 
-        public async Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( PostQueryParams queryParams)
+        public async Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( PostQueryParams queryParams )
         {
             var posts = await _postsRepository.GetAllAsync(queryParams);
             return posts.Select(post => post.ResponseToDto()).ToList();

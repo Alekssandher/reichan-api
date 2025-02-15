@@ -62,7 +62,7 @@ namespace reichan_api.src.DTOs.Global {
         [DefaultValue("Bad Request")]
         public override string Title { get; init; }
 
-        [DefaultValue("Request Badly Formed.")]
+        [DefaultValue("Request Malformed")]
         public override string Detail { get; init; }
 
         [DefaultValue("/api/endpointPath/")]
@@ -73,7 +73,7 @@ namespace reichan_api.src.DTOs.Global {
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#status.400";
             Status = StatusCodes.Status400BadRequest;
             Title = title ?? "Bad Request";
-            Detail = detail ?? "Request Badly Formed";
+            Detail = detail ?? "Request Malformed";
             Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "Unknown";
         }
 

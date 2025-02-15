@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using reichan_api.Utils;
+using reichan_api.src.Utils;
 
 namespace reichan_api.src.Models.Posts {
     public class PostModel 
@@ -22,4 +22,3 @@ namespace reichan_api.src.Models.Posts {
         public int DownVotes { get; init; }
     }
 }
-//new IdGenerator(0).CreateId()

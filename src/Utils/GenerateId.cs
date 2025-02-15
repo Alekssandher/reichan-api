@@ -1,6 +1,6 @@
 using IdGen;
 
-namespace reichan_api.Utils
+namespace reichan_api.src.Utils
 {
     public static class SnowflakeIdGenerator
     {

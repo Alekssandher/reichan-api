@@ -134,6 +134,7 @@ public static class ServicesRegistration
         services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
         services.AddValidatorsFromAssemblyContaining<PostDtoValidator>();
         
+        services.AddHealthChecks();
         // .ConfigureApiBehaviorOptions(options =>
         // {
         //     options.SuppressModelStateInvalidFilter = true;
