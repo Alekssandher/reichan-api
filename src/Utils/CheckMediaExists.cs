@@ -1,4 +1,5 @@
 using reichan_api.src.DTOs.Posts;
+using reichan_api.src.Enums;
 
 namespace reichan_api.src.Utils
 {
@@ -6,14 +7,19 @@ namespace reichan_api.src.Utils
     {
         public static bool CheckImageExists(PostDto body)
         {
+            
+
             if(string.IsNullOrEmpty(body.Media) || string.IsNullOrEmpty(body.Category.ToString()))
             {
                 return false;
             }
-            var filePath = Path.Combine("../storage/uploads", body.Category.ToString(), body.Media);
+            string strCategory = Enum.GetName(typeof(PostCategory), body.Category)!;
 
-            if (!File.Exists(filePath))
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", strCategory.ToLower(), body.Media);
+
+            if (!System.IO.File.Exists(filePath))
             {
+                Console.WriteLine(filePath);
                 return false;
             }
 

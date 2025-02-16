@@ -81,19 +81,20 @@ namespace reichan_api.src.Modules.Medias
         
         public IActionResult GetImage( 
             [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
-            [FromRoute] string category, 
+            
+            [FromRoute] PostCategory category, 
 
             [FromRoute]
             string fileName
             )
         {
-            
-            if (!Enum.TryParse<PostCategory>(category, true, out var categoryEnum) || !Enum.IsDefined(categoryEnum))
+            string strCategory = category.ToString();
+            if (!Enum.TryParse<PostCategory>(strCategory, true, out var categoryEnum) || !Enum.IsDefined(categoryEnum))
             {
                 return BadRequest( InvalidCategoryError );
             }
             
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", category.ToLower(), fileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", strCategory.ToLower(), fileName);
 
             if (!System.IO.File.Exists(filePath))
                 return NotFound(new { success = false, message = "File not found." });
