@@ -23,8 +23,8 @@ namespace reichan_api.src.DTOs.Posts
 
         [Required(ErrorMessage = "Category is required.")]
         [EnumDataType(typeof(PostCategory), ErrorMessage = "Invalid category.")]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public PostCategory Category { get; init; }
+        
+        public string Category { get; init; }
 
         [Description("Author nickname")]
         [DefaultValue("Anonymous")]
@@ -55,7 +55,7 @@ namespace reichan_api.src.DTOs.Posts
             string title, 
             string content, 
             string media, 
-            PostCategory category, 
+            string category, 
             string? author = "Anonymous", 
             string? authorPubKey = null, 
             string? signature = null

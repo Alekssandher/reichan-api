@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using reichan_api.src.DTOs.Global;
 using reichan_api.src.Enums;
@@ -51,7 +52,7 @@ namespace reichan_api.src.Modules.Medias
 
             if( string.IsNullOrEmpty(strCategory)) return BadRequest( InvalidCategoryError );
 
-            string categoryPath = Path.Combine("storage/uploads", strCategory);
+            string categoryPath = Path.Combine("wwwroot/uploads", strCategory);
 
             if(!Directory.Exists(categoryPath)) Directory.CreateDirectory(categoryPath);
 
@@ -75,14 +76,17 @@ namespace reichan_api.src.Modules.Medias
         // Documentation
         [EndpointName("GetMedia")]
         [EndpointSummary("GetMedia")]
+
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK, "application/kind+extension")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         
         public IActionResult GetImage( 
+            [Required(ErrorMessage = "Category is required.")]
             [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
-            
-            [FromRoute] PostCategory category, 
+            [FromRoute] 
+            PostCategory category, 
 
             [FromRoute]
             string fileName
@@ -94,10 +98,10 @@ namespace reichan_api.src.Modules.Medias
                 return BadRequest( InvalidCategoryError );
             }
             
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", strCategory.ToLower(), fileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", strCategory.ToLower(), fileName);
 
             if (!System.IO.File.Exists(filePath))
-                return NotFound(new { success = false, message = "File not found." });
+                return NotFound(new NotFound("File Not Found", "Check the name and category of the file.") );
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
 

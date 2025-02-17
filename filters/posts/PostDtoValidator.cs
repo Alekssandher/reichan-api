@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using FluentValidation;
 using reichan_api.src.DTOs.Posts;
+using reichan_api.src.Enums;
 
 namespace reichan_api.Filters {
     public class PostDtoValidator : AbstractValidator<PostDto>
@@ -18,6 +19,11 @@ namespace reichan_api.Filters {
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .Matches(@"^[a-zA-Z0-9.-]+$").WithMessage("{PropertyName} contains invalid characters.")
                 .When(x => !string.IsNullOrEmpty(x.Media));
+            RuleFor(x => x.Category)
+                .NotEmpty().WithMessage("{PropertyName} is required.")
+                .Must(value => Enum.TryParse(typeof(PostCategory), value, true, out _))
+                .WithMessage("{PropertyName} contains an invalid value.");
+            
         }
 
         private void ApplyStringValidationRules(Expression<Func<PostDto, string>> property)

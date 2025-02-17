@@ -1,6 +1,7 @@
 bin/
 obj/
 storage/
+wwwroot/uploads
 publish/
 
 .env

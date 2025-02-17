@@ -57,7 +57,7 @@ public static class ServicesRegistration
                 {
                     Title = "Reichan API Documentation",
                     Version = "v1",
-                    Description = "An API to interact with a forum."
+                    Description = "An API to interact with a 4chan like forum."
                 };
                 return Task.CompletedTask;
             });

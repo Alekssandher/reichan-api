@@ -51,7 +51,7 @@ namespace reichan_api.src.Mappers {
                 Title = postDto.Title!,
                 Content = postDto.Content!,
                 Media = postDto.Media!,
-                Category = postDto.Category!.ToString().ToLower(),
+                Category = postDto.Category!.ToLower(),
                 Signature = postDto.Signature,
                 UpVotes = postDto.UpVotes,
                 DownVotes = postDto.DownVotes,

@@ -17,8 +17,9 @@ namespace reichan_api.src.Modules.Posts
 
         // Responses objects
         private readonly InternalError internalError = new();
-        private readonly NotFound PostNotFound = new("Posts Not Found", "There are no posts mathing the query.");
-        
+        private readonly NotFound postNotFound = new("Posts Not Found", "There are no posts mathing the query.");
+        private readonly NoContentResponse noContentResponse = new();
+        private readonly CreatedResponse createdResponse = new();
         public PostsController(IPostService postService, ILogger<PostsController> logger)
         {
             _postService = postService;
@@ -33,7 +34,7 @@ namespace reichan_api.src.Modules.Posts
         [EndpointName("GetPosts")]
         [EndpointSummary("GetPosts")]
         [EndpointDescription("Retrieves a list of posts based on the provided query parameters.")]
-        [ProducesResponseType(typeof(IReadOnlyList<PostResponseDTO>), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(typeof(OkResponse<IReadOnlyList<PostResponseDTO>>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
@@ -44,12 +45,11 @@ namespace reichan_api.src.Modules.Posts
             
             IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(queryParams);
             
-            if (!posts.Any()) return NotFound( PostNotFound );
+            if (!posts.Any()) return NotFound( postNotFound );
             
-            return Ok(new ApiResponse<IReadOnlyList<PostResponseDTO>> { 
-                Status = StatusCodes.Status200OK, 
-                Data = posts 
-            });
+            return Ok(new OkResponse<IReadOnlyList<PostResponseDTO>>("Posts Found.", "Posts fetched successfuly.", posts));
+
+            
             
         }
 
@@ -59,7 +59,7 @@ namespace reichan_api.src.Modules.Posts
         [EndpointName("GetPostById")]
         [EndpointSummary("GetPostById")]
         [EndpointDescription("Retrieves a post based on the provided ID.")]
-        [ProducesResponseType(typeof(PostResponseDTO), StatusCodes.Status200OK, "application/json")]
+        [ProducesResponseType(typeof(OkResponse<PostResponseDTO>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(ContentTooLarge), StatusCodes.Status413RequestEntityTooLarge, "application/problem+json")]
@@ -72,10 +72,14 @@ namespace reichan_api.src.Modules.Posts
 
             if (post == null) return NotFound(new NotFound("Post Not Found", $"Post with ID '{id}' was not found."));
              
-            return Ok( new ApiResponse<PostResponseDTO> { 
-                Status = StatusCodes.Status200OK, 
-                Data = post
-            });
+            return Ok(
+                new OkResponse<PostResponseDTO>
+                (
+                    "Post Found",
+                    "Post Fetched Successfuly",
+                    post
+                )
+            );
             
         }
 
@@ -86,7 +90,7 @@ namespace reichan_api.src.Modules.Posts
         [EndpointName("VotePost")]
         [EndpointSummary("VotePost")]
         [EndpointDescription("Vote for a post based on the providade ID and kind of vote.")]
-        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent, "application/json")]
+        [ProducesResponseType(typeof(NoContentResponse), StatusCodes.Status204NoContent, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(ContentTooLarge), StatusCodes.Status413RequestEntityTooLarge, "application/problem+json")]
@@ -98,7 +102,10 @@ namespace reichan_api.src.Modules.Posts
                 return NotFound(new NotFound("Post Not Found", $"Post Not Found by ID: {id}."));
             }
 
-            return NoContent();
+            return StatusCode(
+                204,
+                noContentResponse
+            );
              
         }
 
@@ -109,19 +116,20 @@ namespace reichan_api.src.Modules.Posts
         // Documentation
         [EndpointSummary("CreatePost")]
         [EndpointDescription("Create a post based on the body formed.")]
-        [ProducesResponseType(typeof(void), StatusCodes.Status201Created, "application/json")]
+        [ProducesResponseType(typeof(CreatedResponse), StatusCodes.Status201Created, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Create( [FromBody] PostDto postDto ) {
-
-            if(!CheckMediaExists.CheckImageExists(postDto)) return BadRequest(new NotFound("Media Not Exists", "The media provided does not exist."));
+            
+            if(!CheckMediaExists.CheckImageExists(postDto)) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
 
             bool created = await _postService.CreateAsync( postDto );
 
             return created
-                ? Created()
+                ? StatusCode(201, createdResponse)
                 : StatusCode(500, internalError);
+
             
         }
 

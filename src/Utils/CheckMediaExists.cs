@@ -15,7 +15,7 @@ namespace reichan_api.src.Utils
             }
             string strCategory = Enum.GetName(typeof(PostCategory), body.Category)!;
 
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "uploads", strCategory.ToLower(), body.Media);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", strCategory.ToLower(), body.Media);
 
             if (!System.IO.File.Exists(filePath))
             {

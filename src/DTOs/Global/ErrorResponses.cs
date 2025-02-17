@@ -46,7 +46,7 @@ namespace reichan_api.src.DTOs.Global {
             Status = StatusCodes.Status500InternalServerError;
             Title = "Internal error";
             Detail = "Something went wrong at our side";
-            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "Unknown";
+            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "/unknown";
         }
     }
     public class BadRequest : ErrorDetails {
@@ -74,7 +74,7 @@ namespace reichan_api.src.DTOs.Global {
             Status = StatusCodes.Status400BadRequest;
             Title = title ?? "Bad Request";
             Detail = detail ?? "Request Malformed";
-            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "Unknown";
+            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "/unknown";
         }
 
     }
@@ -104,7 +104,7 @@ namespace reichan_api.src.DTOs.Global {
             Status = StatusCodes.Status404NotFound;
             Title = title ?? "Not Found";
             Detail = detail ?? "We Couldn't Find Your Request.";
-            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "Unknown";
+            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "/unknown";
         }
 
     }
@@ -132,7 +132,7 @@ namespace reichan_api.src.DTOs.Global {
             Status = StatusCodes.Status414RequestUriTooLong;
             Title = title ?? "Request Too Long";
             Detail = detail ?? "Too Long Requisition.";
-            Instance = "Unknown";
+            Instance = "/unknown";
         }
     }
 }
