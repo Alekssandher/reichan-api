@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using reichan_api.Filters;
 using reichan_api.src.DTOs.Global;
 using reichan_api.src.Enums;
 using reichan_api.src.Utils;
@@ -24,8 +25,9 @@ namespace reichan_api.src.Modules.Medias
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> UploadFile(IFormFile file, 
-            [FromRoute] 
+            [Required(ErrorMessage = "Category is required.")]
             [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
+            [FromRoute] 
             PostCategory category 
         )
         
@@ -72,7 +74,7 @@ namespace reichan_api.src.Modules.Medias
 
         [HttpGet("{category}/{fileName}")]
         [RequestSizeLimit(3 * 1024 * 1024)] // 3 MB
-
+        [ServiceFilter(typeof(ValidateGetMedia))]
         // Documentation
         [EndpointName("GetMedia")]
         [EndpointSummary("GetMedia")]

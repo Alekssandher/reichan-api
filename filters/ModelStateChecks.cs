@@ -7,10 +7,9 @@ namespace reichan_api.Filters
     public class ModelStateCheck :Attribute, IActionFilter
     {
         private List<string> ListModelErros(ActionContext context) =>
-                        context.ModelState
+                        [.. context.ModelState
                         .SelectMany(x => x.Value!.Errors)
-                        .Select(x => x.ErrorMessage)
-                        .ToList();
+                        .Select(x => x.ErrorMessage)];
 
         public void OnActionExecuted(ActionExecutedContext context)
         {

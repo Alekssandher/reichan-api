@@ -124,6 +124,7 @@ public static class ServicesRegistration
         services.AddScoped<ValidateCaptcha>();
         services.AddScoped<ValidateIdAttribute>();
         services.AddScoped<ValidateQueryAttribute>();
+        services.AddScoped<ValidateGetMedia>();
         
         services.AddControllers(options =>
         {
