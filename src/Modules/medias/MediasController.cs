@@ -24,7 +24,13 @@ namespace reichan_api.src.Modules.Medias
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
-        public async Task<ActionResult> UploadFile(IFormFile file, 
+        public async Task<ActionResult> UploadFile(
+
+            [Required(ErrorMessage = "File is required.")]
+            [DataType(DataType.Upload)]
+
+            IFormFile file, 
+            
             [Required(ErrorMessage = "Category is required.")]
             [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
             [FromRoute] 

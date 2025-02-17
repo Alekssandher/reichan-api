@@ -13,7 +13,7 @@ namespace reichan_api.src.Utils
             {
                 return false;
             }
-            string strCategory = Enum.GetName(typeof(PostCategory), body.Category)!;
+            string strCategory =  body.Category!;
 
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", strCategory.ToLower(), body.Media);
 

@@ -19,7 +19,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message, "Unhandled exception occurred while processing request.");
+            _logger.LogError(ex, "Unhandled exception occurred while processing request.");
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";

@@ -10,7 +10,7 @@ namespace reichan_api.Filters {
         private const int MaxFileNameLength = 25;
         private readonly ILogger<ValidateGetMedia> _logger = logger;
         private static readonly Regex _validCategoryRegex = new(@"^[a-zA-Z]+$", RegexOptions.Compiled);
-        private static readonly Regex _validFileNameRegex = new(@"^[a-zA-Z.]+$", RegexOptions.Compiled);
+        private static readonly Regex _validFileNameRegex = new(@"^[a-zA-Z0-9.]+$", RegexOptions.Compiled);
 
         public void OnActionExecuting(ActionExecutingContext context) {
             var routeValues = context.RouteData.Values;
@@ -37,6 +37,7 @@ namespace reichan_api.Filters {
 
             if (!_validCategoryRegex.IsMatch(category) || !_validFileNameRegex.IsMatch(fileName))
             {
+                Console.WriteLine(category);
                 context.Result = new BadRequestObjectResult(new BadRequest ("Invalid format", "Category or FileName contains invalid characters"));
                 
                 return;
