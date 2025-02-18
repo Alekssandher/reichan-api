@@ -123,13 +123,10 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Create( [FromBody] PostDto postDto ) {
             
-
-            string apiBaseUrl = "https://localhost:8080/api/medias";
-            string requestUrl = $"{apiBaseUrl}/{postDto.Category}/{postDto.Media}";
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", postDto.Category.ToLower(), postDto.Media);
             
-            HttpResponseMessage response = await _client.GetAsync(requestUrl);
-
-            if(!response.IsSuccessStatusCode) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
+            if (!System.IO.File.Exists(filePath))
+                return NotFound(new NotFound("File Not Found", "Check the name and category of the file.") );
             
             //if(!exists) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
 
