@@ -30,7 +30,7 @@ namespace reichan_api.src.Modules.Medias
             [DataType(DataType.Upload)]
 
             IFormFile file, 
-            
+
             [Required(ErrorMessage = "Category is required.")]
             [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
             [FromRoute] 

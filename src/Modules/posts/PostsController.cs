@@ -108,6 +108,7 @@ namespace reichan_api.src.Modules.Posts
             );
              
         }
+        private static readonly HttpClient _client = new HttpClient();
 
         [HttpPost]    
         [Consumes("application/json")]  
@@ -122,7 +123,17 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Create( [FromBody] PostDto postDto ) {
             
-            if(!CheckMediaExists.CheckImageExists(postDto)) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
+
+            string apiBaseUrl = "https://localhost:8080/api/medias";
+            string requestUrl = $"{apiBaseUrl}/{postDto.Category}/{postDto.Media}";
+            
+            HttpResponseMessage response = await _client.GetAsync(requestUrl);
+
+            if(!response.IsSuccessStatusCode) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
+            
+            //if(!exists) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
+
+            //if(!CheckMediaExists.CheckImageExists(postDto)) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
 
             bool created = await _postService.CreateAsync( postDto );
 
