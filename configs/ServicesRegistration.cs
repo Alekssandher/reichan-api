@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
 using reichan_api.Configs;
+using reichan_api.filters.Posts;
 using reichan_api.Filters;
 using reichan_api.src.Interfaces;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Modules.Posts;
 using reichan_api.src.Repositories;
-using Scalar.AspNetCore;
 
 public static class ServicesRegistration
 {

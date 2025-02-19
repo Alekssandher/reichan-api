@@ -1,11 +1,10 @@
 using reichan_api.src.DTOs.Posts;
-using reichan_api.src.Enums;
 
 namespace reichan_api.src.Utils
 {
     public class CheckMediaExists
     {
-        private static readonly string cloudiUrl = "https://res.cloudinary.com/dnf22gtjt/image/upload/v1739916746";
+        private static readonly string cloudiUrl = "https://res.cloudinary.com/dnf22gtjt/image/upload/f_auto,q_auto/v1";
         private static readonly HttpClient httpClient = new();
         public static async Task<bool> CheckImageExistsAsync(PostDto postDto)
         {

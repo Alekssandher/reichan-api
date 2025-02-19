@@ -3,6 +3,7 @@ using reichan_api.src.Interfaces;
 using reichan_api.src.Mappers;
 using reichan_api.src.DTOs.Posts;
 using reichan_api.src.QueryParams;
+using reichan_api.src.Models.Posts;
 
 namespace reichan_api.src.Modules.Posts {
     public class PostsService : IPostService
@@ -16,13 +17,13 @@ namespace reichan_api.src.Modules.Posts {
 
         public async Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( PostQueryParams queryParams )
         {
-            var posts = await _postsRepository.GetAllAsync(queryParams);
+            IReadOnlyList<PostModel> posts = await _postsRepository.GetAllAsync(queryParams);
             return posts.Select(post => post.ResponseToDto()).ToList();
         }
 
         public async Task<PostResponseDTO?> GetByIdAsync(string id)
         {
-            var post = await _postsRepository.GetByIdAsync(id);
+            PostModel? post = await _postsRepository.GetByIdAsync(id);
             return post?.ResponseToDto();
         }
 

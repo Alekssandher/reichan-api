@@ -3,10 +3,10 @@ using MongoDB.Driver;
 using reichan_api.src.QueryParams;
 using reichan_api.src.Interfaces;
 using reichan_api.src.DTOs.Posts;
-using reichan_api.src.DTOs.Global;
+using reichan_api.src.DTOs.Responses;
 using reichan_api.Filters;
 using reichan_api.src.Utils;
-using CloudinaryDotNet;
+using reichan_api.filters.Posts;
 
 namespace reichan_api.src.Modules.Posts
 {

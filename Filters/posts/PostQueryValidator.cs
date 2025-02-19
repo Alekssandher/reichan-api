@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using reichan_api.src.DTOs.Global;
+using reichan_api.src.DTOs.Responses;
 
-namespace reichan_api.Filters {
+namespace reichan_api.filters.Posts {
     public class ValidateQueryAttribute : IActionFilter 
     {
         private const int MaxQueryLength = 10;

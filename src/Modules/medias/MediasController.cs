@@ -1,11 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mime;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using DotNetEnv;
 using Microsoft.AspNetCore.Mvc;
-using reichan_api.Filters;
-using reichan_api.src.DTOs.Global;
+using reichan_api.src.DTOs.Responses;
 using reichan_api.src.Enums;
 using reichan_api.src.Utils;
 

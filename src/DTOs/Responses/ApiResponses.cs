@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace reichan_api.src.DTOs.Global
+namespace reichan_api.src.DTOs.Responses
 {
     public abstract class ApiResponse<T>
     {

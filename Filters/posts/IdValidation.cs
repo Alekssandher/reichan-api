@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MongoDB.Bson;
-using reichan_api.src.DTOs.Global;
+using reichan_api.src.DTOs.Responses;
 
 namespace reichan_api.Filters {
     public class ValidateIdAttribute : IActionFilter

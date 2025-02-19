@@ -1,4 +1,4 @@
-using reichan_api.src.DTOs.Global;
+using reichan_api.src.DTOs.Responses;
 
 public class ExceptionHandlingMiddleware
 {
