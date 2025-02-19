@@ -5,25 +5,26 @@ namespace reichan_api.src.Utils
 {
     public class CheckMediaExists
     {
-        public static bool CheckImageExists(PostDto body)
+        private static readonly string cloudiUrl = "https://res.cloudinary.com/dnf22gtjt/image/upload/v1739916746";
+        private static readonly HttpClient httpClient = new();
+        public static async Task<bool> CheckImageExistsAsync(PostDto postDto)
         {
             
 
-            if(string.IsNullOrEmpty(body.Media) || string.IsNullOrEmpty(body.Category.ToString()))
+            if(string.IsNullOrEmpty(postDto.Category) || string.IsNullOrEmpty(postDto.Media))
             {
                 return false;
             }
-            string strCategory =  body.Category!;
+            string completedUrl = $"{cloudiUrl}/{postDto.Category}/{postDto.Media}";
 
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", strCategory.ToLower(), body.Media);
+            Console.WriteLine(completedUrl);
+            HttpResponseMessage response = await httpClient.GetAsync(completedUrl);
 
-            if (!System.IO.File.Exists(filePath))
-            {
-                Console.WriteLine(filePath);
-                return false;
-            }
+            if(!response.IsSuccessStatusCode) return false;
 
             return true;
+            
+            
         }
     }
 }

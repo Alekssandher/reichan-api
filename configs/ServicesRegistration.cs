@@ -1,4 +1,5 @@
 using AspNetCoreRateLimit;
+using CloudinaryDotNet;
 using DotNetEnv;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -6,6 +7,7 @@ using IdGen.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
+using reichan_api.Configs;
 using reichan_api.Filters;
 using reichan_api.src.Interfaces;
 using reichan_api.src.Models.Posts;
@@ -31,7 +33,7 @@ public static class ServicesRegistration
 
             options.AddPolicy("AllowWithCredentials", builder =>
             {
-                builder.WithOrigins("https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080", "http://localhost:6565", "http://localhost:5152")
+                builder.WithOrigins("http://localhost:4200", "https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080", "http://localhost:6565", "http://localhost:5152")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials(); 
@@ -82,6 +84,20 @@ public static class ServicesRegistration
         services.AddInMemoryRateLimiting();
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
+        //Cloudinary 
+        CloudinarySettings cloudinarySettings = new () {
+            CloudName = Environment.GetEnvironmentVariable("CLOUDINARY_NAME") ?? "",
+            ApiKey = Environment.GetEnvironmentVariable("CLOUDINARY_KEY") ?? "",
+            ApiSecret = Environment.GetEnvironmentVariable("CLOUDINARY_SECRET") ?? ""
+        };
+        Account cloudinaryAccount = new (
+            cloudinarySettings.CloudName,
+            cloudinarySettings.ApiKey,
+            cloudinarySettings.ApiSecret
+        );
+        Cloudinary cloudinary = new (cloudinaryAccount);
+        services.AddSingleton(cloudinary);
+        
         // Configs Database
         DatabaseConfig databaseConfig = new DatabaseConfig
         {

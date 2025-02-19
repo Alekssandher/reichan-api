@@ -6,6 +6,7 @@ using reichan_api.src.DTOs.Posts;
 using reichan_api.src.DTOs.Global;
 using reichan_api.Filters;
 using reichan_api.src.Utils;
+using CloudinaryDotNet;
 
 namespace reichan_api.src.Modules.Posts
 {
@@ -20,10 +21,12 @@ namespace reichan_api.src.Modules.Posts
         private readonly NotFound postNotFound = new("Posts Not Found", "There are no posts mathing the query.");
         private readonly NoContentResponse noContentResponse = new();
         private readonly CreatedResponse createdResponse = new();
+
         public PostsController(IPostService postService, ILogger<PostsController> logger)
         {
             _postService = postService;
             _logger = logger;
+            
         }
 
         
@@ -108,7 +111,6 @@ namespace reichan_api.src.Modules.Posts
             );
              
         }
-        private static readonly HttpClient _client = new HttpClient();
 
         [HttpPost]    
         [Consumes("application/json")]  
@@ -123,14 +125,9 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Create( [FromBody] PostDto postDto ) {
             
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", postDto.Category.ToLower(), postDto.Media);
+            bool exists = await CheckMediaExists.CheckImageExistsAsync(postDto);
             
-            if (!System.IO.File.Exists(filePath))
-                return NotFound(new NotFound("File Not Found", "Check the name and category of the file.") );
-            
-            //if(!exists) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
-
-            //if(!CheckMediaExists.CheckImageExists(postDto)) return BadRequest(new NotFound("Media Not Found", "The media provided was not found or does not exist."));
+            if(!exists) return NotFound(new NotFound("Not Found","The media provided does not exist or was not found."));
 
             bool created = await _postService.CreateAsync( postDto );
 
