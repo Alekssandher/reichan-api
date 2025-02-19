@@ -14,22 +14,18 @@ namespace reichan_api.src.DTOs.Responses
         public int Status { get; init; }
 
         [Description("Title response.")]
-        [DefaultValue("Fetched Successfully")]
         [JsonPropertyName("title")]
         public string Title { get; init; }
 
         [Description("Detailed response description.")]
-        [DefaultValue("Fetched succssesfully and data found")]
         [JsonPropertyName("detail")]
         public string Detail { get; init; }
 
         [Description("Response instance ID.")]
-        [DefaultValue("/api/endpointPath/")]
         [JsonPropertyName("instance")]
         public string Instance { get; init; }
 
         [Description("Response Data")]
-        [DefaultValue("response")]
         [JsonPropertyName("data")]
         public T? Data { get; init; }
 
