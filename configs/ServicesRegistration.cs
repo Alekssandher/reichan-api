@@ -33,7 +33,7 @@ public static class ServicesRegistration
 
             options.AddPolicy("AllowWithCredentials", builder =>
             {
-                builder.WithOrigins("http://localhost:4200", "https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080", "http://localhost:6565", "http://localhost:5152")
+                builder.WithOrigins("http://localhost:4200", "https://alekssandher.github.io/reichan-web-client/", "http://127.0.0.1:8080", "https://alekssandher.github.io/angular-blog/")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials(); 
