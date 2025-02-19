@@ -19,8 +19,8 @@ namespace reichan_api.src.Mappers {
                 Signature = post.Signature,
                 UpVotes = post.UpVotes,
                 DownVotes = post.DownVotes,
-                CreatedAt = post.CreatedAt
-                
+                CreatedAt = post.CreatedAt,
+                Active = post.Active                
             };
         }
 
