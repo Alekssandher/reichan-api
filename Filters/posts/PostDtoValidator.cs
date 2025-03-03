@@ -17,7 +17,7 @@ namespace reichan_api.Filters {
 
             RuleFor(x => x.Media)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
-                .Matches(@"^[a-zA-Z0-9.]+$").WithMessage("{PropertyName} contains invalid characters.")
+                .Matches(@"^[0-9]+$").WithMessage("{PropertyName} contains invalid characters.")
                 .When(x => !string.IsNullOrEmpty(x.Media));
             RuleFor(x => x.Category)
                 .NotEmpty().WithMessage("{PropertyName} is required.")

@@ -76,7 +76,7 @@ namespace reichan_api.src.Modules.Medias
                 UniqueFilename = false,
                 Overwrite = true
             };
-
+            
             ImageUploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
             string imageUrl = uploadResult.SecureUrl.ToString();
@@ -86,63 +86,7 @@ namespace reichan_api.src.Modules.Medias
             return Ok(new OkResponse<string>("Uploaded","File was uploaded successfully", fileName));
         }
 
-        // [HttpGet("{category}/{fileName}")]
-        // [RequestSizeLimit(3 * 1024 * 1024)] // 3 MB
-        // [ServiceFilter(typeof(ValidateGetMedia))]
-        // // Documentation
-        // [EndpointName("GetMedia")]
-        // [EndpointSummary("GetMedia")]
-
-        // [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK, "application/kind+extension")]
-        // [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
-        // [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
-        // [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         
-        // public IActionResult GetImage( 
-        //     [Required(ErrorMessage = "Category is required.")]
-        //     [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
-        //     [FromRoute] 
-        //     PostCategory category, 
-
-        //     [FromRoute]
-        //     string fileName
-        //     )
-        // {
-        //     string strCategory = category.ToString();
-        //     if (!Enum.TryParse<PostCategory>(strCategory, true, out var categoryEnum) || !Enum.IsDefined(categoryEnum))
-        //     {
-        //         return BadRequest( InvalidCategoryError );
-        //     }
-            
-        //     string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", strCategory.ToLower(), fileName);
-
-        //     if (!System.IO.File.Exists(filePath))
-        //         return NotFound(new NotFound("File Not Found", "Check the name and category of the file.") );
-
-        //     byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-
-        //     // MIME type
-        //     string fileExtension = Path.GetExtension(filePath).ToLowerInvariant();
-        //     string mimeType = fileExtension switch
-        //     {
-        //         ".jpg" or ".jpeg" => "image/jpeg",
-        //         ".png" => "image/png",
-        //         ".webp" => "image/webp",
-        //         ".gif" => "image/gif",
-
-        //         ".mp4" => "video/mp4",
-        //         ".webm" => "video/webm",
-        //         ".avi" => "video/x-msvideo",
-        //         ".mov" => "video/quicktime",
-        //         ".mkv" => "video/x-matroska",
-
-        //         _ => "application/octet-stream" // Generical MIME type
-        //     };
-
-
-        //     return File(fileBytes, mimeType);
-        // }
-
     }
     
 }

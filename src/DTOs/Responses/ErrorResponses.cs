@@ -6,7 +6,7 @@ namespace reichan_api.src.DTOs.Responses {
     public abstract class ErrorDetails : ProblemDetails
     {
 
-        [Description("Response status in accord to RFC 7807.")]
+        [Description("Response status in accord to RFC 9110 and RFC 6585.")]
         public new abstract int Status { get; init; }
 
         [Description("Title error.")]
@@ -24,7 +24,7 @@ namespace reichan_api.src.DTOs.Responses {
 
     public class InternalError : ErrorDetails {
 
-        private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+        private readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
 
         [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.500")]
         public override string Type { get; init; }
@@ -51,7 +51,7 @@ namespace reichan_api.src.DTOs.Responses {
     }
     public class BadRequest : ErrorDetails {
 
-        private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+        private readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
         
         [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.400")]
         public override string Type { get; init; }
@@ -81,7 +81,7 @@ namespace reichan_api.src.DTOs.Responses {
 
     public class NotFound : ErrorDetails {
 
-        private static readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+        private readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
 
         [DefaultValue("https://datatracker.ietf.org/doc/html/rfc9110#status.404")]
         public override string Type { get; init; }
@@ -133,6 +133,35 @@ namespace reichan_api.src.DTOs.Responses {
             Title = title ?? "Request Too Long";
             Detail = detail ?? "Too Long Requisition.";
             Instance = "/unknown";
+        }
+    }
+
+    public class TooManyRequests : ErrorDetails {
+
+        private readonly IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
+
+        [DefaultValue("https://datatracker.ietf.org/doc/html/rfc6585#section-4")]
+        public override string Type { get; init; }
+
+        [DefaultValue(414)]
+        public override int Status {get; init; }
+
+        [DefaultValue("Too Many Requests")]
+        public override string Title { get; init; }
+
+        [DefaultValue("Too many attemps, try again later.")]
+        public override string Detail { get; init; }
+
+        [DefaultValue("Unknown")]
+        public override string Instance { get; init; }
+
+        public TooManyRequests(string title, string detail)
+        {
+            Type = "https://datatracker.ietf.org/doc/html/rfc6585#section-4";
+            Status = StatusCodes.Status429TooManyRequests;
+            Title = title ?? "Too Many Requests";
+            Detail = detail ?? "You are under cooldown or rate limit, try again later.";
+            Instance = _httpContextAccessor.HttpContext?.Request.Path ?? "/unknown";
         }
     }
 }

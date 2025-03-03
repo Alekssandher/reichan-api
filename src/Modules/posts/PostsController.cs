@@ -7,6 +7,7 @@ using reichan_api.src.DTOs.Responses;
 using reichan_api.Filters;
 using reichan_api.src.Utils;
 using reichan_api.filters.Posts;
+using reichan_api.Filters.captcha;
 
 namespace reichan_api.src.Modules.Posts
 {
@@ -32,7 +33,7 @@ namespace reichan_api.src.Modules.Posts
         
         [HttpGet]
         [ServiceFilter(typeof(ValidateQueryAttribute))]
-
+        
         // Documentation
         [EndpointName("GetPosts")]
         [EndpointSummary("GetPosts")]
@@ -113,17 +114,20 @@ namespace reichan_api.src.Modules.Posts
         }
 
         [HttpPost]    
+        [ServiceFilter(typeof(ValidateCaptcha))]
+        
+        // Documentation
         [Consumes("application/json")]  
         [EndpointName("CreatePost")]
-
-        // Documentation
         [EndpointSummary("CreatePost")]
         [EndpointDescription("Create a post based on the body formed.")]
         [ProducesResponseType(typeof(CreatedResponse), StatusCodes.Status201Created, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
-        public async Task<ActionResult> Create( [FromBody] PostDto postDto ) {
+
+        
+        public async Task<ActionResult> Create( [FromBody] PostDto postDto, [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode) {
             
             bool exists = await CheckMediaExists.CheckImageExistsAsync(postDto);
             
