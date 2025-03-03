@@ -16,7 +16,8 @@ namespace reichan_api.Extensions
                 options.AddPolicy("AllowWithCredentials", builder =>
                 {
                     builder.WithOrigins(
-                        "http://localhost:4200", 
+                        "http://localhost:4200",
+			"http://localhost:5263", 
                         "https://alekssandher.github.io/reichan-web-client/", 
                         "http://127.0.0.1:8080", 
                         "https://alekssandher.github.io/angular-blog/"
