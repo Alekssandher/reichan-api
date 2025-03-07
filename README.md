@@ -13,7 +13,7 @@ The API documentation is available at the following link:
 ## Installation
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repo/reichan-api.git
+   git clone https://github.com/Alekssandher/reichan-api.git
    ```
 2. Navigate to the project directory:
    ```sh
@@ -23,8 +23,24 @@ The API documentation is available at the following link:
    ```sh
    dotnet restore
    ```
-4. Configure the environment variables for database and API settings.
-5. Run the application:
+4. Configure the environment variables for database and API settings:
+   ```
+   DATABASE_URL = ""
+   DATABASE_NAME = ""
+   
+   POSTS_COLLECTION = ""
+   USERS_COLLECTION = ""
+   REPLIES_COLLECTION = ""
+   
+   # true or false
+   ENABLE_SWAGGER = ""
+   
+   #CLOUDINARY
+   CLOUDINARY_NAME = ""
+   CLOUDINARY_KEY = ""
+   CLOUDINARY_SECRET = ""
+   ```
+6. Run the application:
    ```sh
    dotnet run
    ```
