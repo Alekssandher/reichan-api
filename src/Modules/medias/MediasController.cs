@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
+using reichan_api.Filters.captcha;
 using reichan_api.src.DTOs.Responses;
 using reichan_api.src.Enums;
 using reichan_api.src.Utils;
@@ -22,6 +23,7 @@ namespace reichan_api.src.Modules.Medias
         }
 
         [HttpPost("{category}")]
+        [ServiceFilter(typeof(ValidateCaptcha))]
         [RequestSizeLimit( 3 * 1024 * 1024)] // 3 MB
 
         [EndpointName("UploadMedia")]
@@ -39,7 +41,8 @@ namespace reichan_api.src.Modules.Medias
             [Required(ErrorMessage = "Category is required.")]
             [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
             [FromRoute] 
-            PostCategory category 
+            PostCategory category,
+            [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode
         )
         
         {

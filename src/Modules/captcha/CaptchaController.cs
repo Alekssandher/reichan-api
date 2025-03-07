@@ -25,6 +25,7 @@ namespace reichan_api.src.Modules.captcha
 
         [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "image/png")]
         [ProducesResponseType(typeof(TooManyRequests), StatusCodes.Status429TooManyRequests, "application/json")]
+        [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/json")]
         public async Task<ActionResult> GetCaptcha()
         {
             if (HttpContext.Session == null)
