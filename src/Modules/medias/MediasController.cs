@@ -23,8 +23,8 @@ namespace reichan_api.src.Modules.Medias
         }
 
         [HttpPost("{category}")]
-        [ServiceFilter(typeof(ValidateCaptcha))]
         [RequestSizeLimit( 3 * 1024 * 1024)] // 3 MB
+        [ServiceFilter(typeof(ValidateCaptcha))]
 
         [EndpointName("UploadMedia")]
         [EndpointSummary("UploadMedia")]
@@ -39,10 +39,12 @@ namespace reichan_api.src.Modules.Medias
             IFormFile file, 
 
             [Required(ErrorMessage = "Category is required.")]
-            [EnumDataType(typeof(PostCategory), ErrorMessage = "You must provide a valid category.")]
+            [EnumDataType(typeof(Categories), ErrorMessage = "You must provide a valid category.")]
             [FromRoute] 
-            PostCategory category,
-            [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode
+            Categories category,
+            
+            [FromHeader(Name = "X-CaptchaCode")] 
+            string CaptchaCode
         )
         
         {

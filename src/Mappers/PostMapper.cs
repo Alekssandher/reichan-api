@@ -24,24 +24,6 @@ namespace reichan_api.src.Mappers {
             };
         }
 
-        public static PostModel ResponseToModel(this PostResponseDTO postResponseDto)
-        {
-            return new PostModel
-            {
-                PublicId = postResponseDto.Id,
-                AuthorPubKey = postResponseDto.AuthorPubKey,
-                Author = postResponseDto.Author,
-                Title = postResponseDto.Title,
-                Content = postResponseDto.Content,
-                Media = postResponseDto.Media,
-                Category = postResponseDto.Category,
-                Signature = postResponseDto.Signature,
-                UpVotes = postResponseDto.UpVotes,
-                DownVotes = postResponseDto.DownVotes,
-                CreatedAt = postResponseDto.CreatedAt
-            };
-        }
-
         public static PostModel ToModel(this PostDto postDto ) {
             
             return new PostModel 

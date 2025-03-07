@@ -22,7 +22,7 @@ namespace reichan_api.src.DTOs.Posts
         public string Media { get; init; }
 
         [Required(ErrorMessage = "Category is required.")]
-        [EnumDataType(typeof(PostCategory), ErrorMessage = "Invalid category.")]
+        [EnumDataType(typeof(Categories), ErrorMessage = "Invalid category.")]
         
         public string Category { get; init; }
 

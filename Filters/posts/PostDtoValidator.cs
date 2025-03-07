@@ -21,7 +21,7 @@ namespace reichan_api.Filters {
                 .When(x => !string.IsNullOrEmpty(x.Media));
             RuleFor(x => x.Category)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
-                .Must(value => Enum.TryParse(typeof(PostCategory), value, true, out _))
+                .Must(value => Enum.TryParse(typeof(Categories), value, true, out _))
                 .WithMessage("{PropertyName} contains an invalid value.");
             
         }

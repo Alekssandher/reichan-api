@@ -3,7 +3,9 @@ using reichan_api.filters.Posts;
 using reichan_api.Filters;
 using reichan_api.Filters.captcha;
 using reichan_api.src.Interfaces;
+using reichan_api.src.Interfaces.replies;
 using reichan_api.src.Modules.Posts;
+using reichan_api.src.Modules.replies;
 using reichan_api.src.Repositories;
 
 namespace reichan_api.Extensions
@@ -15,6 +17,8 @@ namespace reichan_api.Extensions
             services.AddIdGen(123);
             services.AddScoped<IPostService, PostsService>();
             services.AddScoped<IPostRepository, PostsRepository>();
+            services.AddScoped<IReplyService, RepliesService>();
+            services.AddScoped<IReplyRepository, ReplyRepository>();
 
             services.AddScoped<ValidateQueryAttribute>();
             services.AddScoped<ValidateIdAttribute>();

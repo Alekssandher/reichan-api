@@ -4,7 +4,7 @@ namespace reichan_api.src.Enums {
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
 
-    public enum PostCategory
+    public enum Categories
     {
         politic,
         anime,

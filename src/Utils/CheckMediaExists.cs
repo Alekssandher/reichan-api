@@ -6,17 +6,16 @@ namespace reichan_api.src.Utils
     {
         private static readonly string cloudiUrl = "https://res.cloudinary.com/dnf22gtjt/image/upload/f_auto,q_auto/v1";
         private static readonly HttpClient httpClient = new();
-        public static async Task<bool> CheckImageExistsAsync(PostDto postDto)
+        public static async Task<bool> CheckImageExistsAsync(string media, string category)
         {
             
 
-            if(string.IsNullOrEmpty(postDto.Category) || string.IsNullOrEmpty(postDto.Media))
+            if(string.IsNullOrEmpty(category) || string.IsNullOrEmpty(media))
             {
                 return false;
             }
-            string completedUrl = $"{cloudiUrl}/{postDto.Category}/{postDto.Media}";
+            string completedUrl = $"{cloudiUrl}/{category}/{media}";
 
-            Console.WriteLine(completedUrl);
             HttpResponseMessage response = await httpClient.GetAsync(completedUrl);
 
             if(!response.IsSuccessStatusCode) return false;
