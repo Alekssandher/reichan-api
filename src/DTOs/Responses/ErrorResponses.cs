@@ -143,7 +143,7 @@ namespace reichan_api.src.DTOs.Responses {
         [DefaultValue("https://datatracker.ietf.org/doc/html/rfc6585#section-4")]
         public override string Type { get; init; }
 
-        [DefaultValue(414)]
+        [DefaultValue(429)]
         public override int Status {get; init; }
 
         [DefaultValue("Too Many Requests")]

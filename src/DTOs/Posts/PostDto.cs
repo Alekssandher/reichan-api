@@ -16,9 +16,9 @@ namespace reichan_api.src.DTOs.Posts
         public string Content { get; init; }
 
         [Required(ErrorMessage = "Media is required.")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Invalid image or video format.")]
-        [StringLength(19, MinimumLength = 17, ErrorMessage = "Media id lenght invalid")]
-        [Description("Media id located in the path /api/media/{category}/{fileName}")]
+        [RegularExpression(@"^[a-z0-9/]+$", ErrorMessage = "Invalid image or video format.")]
+        [StringLength(30, MinimumLength = 1, ErrorMessage = "Media id lenght invalid")]
+        [Description("Media ID obtained in the path POST: /api/media/{category}")]
         public string Media { get; init; }
 
         [Required(ErrorMessage = "Category is required.")]

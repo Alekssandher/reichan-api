@@ -21,7 +21,6 @@ namespace reichan_api.src.Repositories
             IndexKeysDefinition<ReplyModel> indexKeys = Builders<ReplyModel>.IndexKeys
                 .Ascending(post => post.PublicId)
                 .Ascending(post => post.Author)
-                .Ascending(post => post.Category)
                 .Descending(post => post.CreatedAt);
 
             var indexModel = new CreateIndexModel<ReplyModel>(indexKeys, new CreateIndexOptions { Unique = false });
@@ -35,14 +34,19 @@ namespace reichan_api.src.Repositories
 
         public async Task<bool> InsertAsync(ReplyModel reply)
         {
-            var postExists = await _postsCollection.Find(Builders<PostModel>.Filter.Eq("PublicId", reply.RepliesTo)).FirstOrDefaultAsync();
+            var exists = CheckIfTargetExists(reply.ParentId, "post");
 
-            if(postExists == null) return false;
+            if(exists == null) return false;
             
             await _repliesCollection.InsertOneAsync(reply);
             return true;
         }
 
-        
+        private async Task<(PostModel?, ReplyModel?)> CheckIfTargetExists(string parentId, string parentType)
+        {
+            if(parentType == "post") return (await _postsCollection.Find(Builders<PostModel>.Filter.Eq("PublicId", parentId)).FirstOrDefaultAsync(), null);
+            else if(parentType == "reply") return (null, await _repliesCollection.Find(Builders<ReplyModel>.Filter.Eq("PublicId", parentId)).FirstOrDefaultAsync());
+            else throw new Exception("Invalid parentType.");
+        }
     }
 }

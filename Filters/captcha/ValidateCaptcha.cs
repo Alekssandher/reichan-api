@@ -48,6 +48,15 @@ namespace reichan_api.Filters.captcha
             HttpContext httpContext = context.HttpContext;
             ISession session = httpContext.Session;
 
+            string routePath = httpContext.Request.Path.ToString().ToLower();
+            
+            if (routePath.Contains("reply") || routePath.Contains("post"))
+            {
+                session.Remove("CaptchaCode");
+                session.Remove("UsedCaptchaRoutes");
+                return;
+            }
+
             var usedRoutes = session.GetString("UsedCaptchaRoutes")?.Split(';').ToList() ?? new List<string>();
 
             if (usedRoutes.Count >= 2)

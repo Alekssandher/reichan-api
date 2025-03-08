@@ -49,7 +49,7 @@ namespace reichan_api.src.Modules.replies
 
         public async Task<ActionResult> CreateReply([FromBody] ReplyDto reply, [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode)
         {   
-            bool mediaExists = await CheckMediaExists.CheckImageExistsAsync(reply.Media, reply.Category);
+            bool mediaExists = await CheckMediaExists.CheckImageExistsAsync(reply.Media);
             
             if(!mediaExists) return NotFound(new NotFound("Not Found","The media provided does not exist or was not found."));
 

@@ -1,5 +1,6 @@
 using reichan_api.src.DTOs.Replies;
 using reichan_api.src.Models.Replies;
+using reichan_api.src.Utils;
 
 namespace reichan_api.src.Mappers
 {
@@ -9,9 +10,10 @@ namespace reichan_api.src.Mappers
         {
             return new ReplyResponseDto {
                 Id = model.PublicId,
+                ParentId = model.ParentId,
+                ParentType = model.ParentType,
                 Content = model.Content,
                 Media = model.Media,
-                Category = model.Category,
                 Author = model.Author,
                 CreatedAt = model.CreatedAt
             };
@@ -19,13 +21,13 @@ namespace reichan_api.src.Mappers
         public static ReplyModel ToModel(this ReplyDto dto)
         {
             return new ReplyModel {
-                PublicId = dto.PublicId,
-                RepliesTo = dto.RepliesTo,
+                ParentId = dto.ParentId,
+                PublicId = SnowflakeIdGenerator.GenerateId().ToString(),
+                ParentType = dto.ParentType,
                 Content = dto.Content,
                 Media = dto.Media,
-                Category = dto.Category,
-                Author = dto.Author!,
-                CreatedAt = dto.CreatedAt
+                Author = dto.Author ?? "Anonymous",
+                CreatedAt = DateTime.UtcNow
             };
         }
     }
