@@ -3,6 +3,7 @@ using reichan_api.Filters.captcha;
 using reichan_api.src.DTOs.Replies;
 using reichan_api.src.DTOs.Responses;
 using reichan_api.src.Interfaces.replies;
+using reichan_api.src.QueryParams;
 using reichan_api.src.Utils;
 
 namespace reichan_api.src.Modules.replies
@@ -28,9 +29,9 @@ namespace reichan_api.src.Modules.replies
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
-        public async Task<ActionResult> GetReplies()
+        public async Task<ActionResult> GetReplies([FromQuery] ReplyQueryParams replyQuery)
         {
-            IReadOnlyList<ReplyResponseDto> replies = await _replyService.GetAllAsync();
+            IReadOnlyList<ReplyResponseDto> replies = await _replyService.GetAllAsync(replyQuery);
 
             return StatusCode(200, new OkResponse<IReadOnlyList<ReplyResponseDto>>("", "", replies));
 

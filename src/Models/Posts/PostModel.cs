@@ -10,7 +10,6 @@ namespace reichan_api.src.Models.Posts {
         [BsonRepresentation(BsonType.ObjectId)] 
         public string? Id { get; init; }
         public required string PublicId { get; init; }
-        public string? AuthorPubKey { get; init; }
         public required string Title { get; init; }
         public required string Content { get; init; }
         public required string Media { get; init; }
@@ -19,8 +18,7 @@ namespace reichan_api.src.Models.Posts {
         public required Categories Category { get; init; }
         public required string Author { get; init; }
         public DateTime CreatedAt { get; init; }
-        public string? Signature { get; init; }
-        public bool Active { get; init; } = true;
+        public bool Active { get; init; }
         public int UpVotes { get; init; }
         public int DownVotes { get; init; }
     }

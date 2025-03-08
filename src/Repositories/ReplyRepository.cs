@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using reichan_api.src.Interfaces.replies;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Models.Replies;
+using reichan_api.src.QueryParams;
 
 namespace reichan_api.src.Repositories
 {
@@ -27,9 +28,12 @@ namespace reichan_api.src.Repositories
             _repliesCollection.Indexes.CreateOne(indexModel);
         }
 
-        public async Task<IReadOnlyList<ReplyModel>> GetAllAsync()
+        public async Task<IReadOnlyList<ReplyModel>> GetAllAsync(ReplyQueryParams replyQuery)
         {
-            return await _repliesCollection.Find(_ => true).ToListAsync();
+            FilterDefinition<ReplyModel> filter = replyQuery.GetFilter();
+            FindOptions<ReplyModel> options = replyQuery.GetFindOptions();
+
+            return await _repliesCollection.Find(filter).Sort(options.Sort).Skip(options.Skip).Limit(options.Limit).ToListAsync();
         }
 
         public async Task<bool> InsertAsync(ReplyModel reply)

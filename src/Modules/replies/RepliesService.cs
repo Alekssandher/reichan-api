@@ -4,6 +4,7 @@ using reichan_api.src.Interfaces.replies;
 using reichan_api.src.Mappers;
 using reichan_api.src.Models.Posts;
 using reichan_api.src.Models.Replies;
+using reichan_api.src.QueryParams;
 
 namespace reichan_api.src.Modules.replies
 {
@@ -16,9 +17,9 @@ namespace reichan_api.src.Modules.replies
             _repository = repository;
         }
 
-        public async Task<IReadOnlyList<ReplyResponseDto>> GetAllAsync()
+        public async Task<IReadOnlyList<ReplyResponseDto>> GetAllAsync(ReplyQueryParams replyQuery)
         {
-            IReadOnlyList<ReplyModel> replies = await _repository.GetAllAsync();
+            IReadOnlyList<ReplyModel> replies = await _repository.GetAllAsync(replyQuery);
             return replies.Select(reply => reply.ToResponseDto()).ToList();
         }
 
