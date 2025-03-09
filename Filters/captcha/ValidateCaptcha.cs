@@ -50,7 +50,7 @@ namespace reichan_api.Filters.captcha
 
             string routePath = httpContext.Request.Path.ToString().ToLower();
             
-            if (routePath.Contains("reply") || routePath.Contains("post"))
+            if (routePath.Contains("reply") || routePath.Contains("thread"))
             {
                 session.Remove("CaptchaCode");
                 session.Remove("UsedCaptchaRoutes");
