@@ -2,10 +2,9 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using MongoDB.Bson;
 using reichan_api.src.DTOs.Responses;
 
-namespace reichan_api.Filters {
+namespace reichan_api.Filters.threads {
     public class ValidateIdAttribute : IActionFilter
     {
         private static readonly BadRequestObjectResult EmptyIdError = new( new BadRequest("Empty ID", "You must provide an ID.") );

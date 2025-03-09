@@ -1,9 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using reichan_api.src.Enums;
-using reichan_api.src.Utils;
 
-namespace reichan_api.src.Models.Posts {
+namespace reichan_api.src.Models.Threads {
     public class ThreadModel 
     {
         [BsonId] 

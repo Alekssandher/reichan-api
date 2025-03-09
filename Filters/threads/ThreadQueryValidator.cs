@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using reichan_api.src.DTOs.Responses;
 
-namespace reichan_api.filters.Posts {
+namespace reichan_api.filters.threads {
     public class ValidateQueryAttribute : IActionFilter 
     {
         private const int MaxQueryLength = 10;

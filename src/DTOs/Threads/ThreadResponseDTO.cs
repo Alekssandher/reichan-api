@@ -1,6 +1,6 @@
 using reichan_api.src.Enums;
 
-namespace reichan_api.src.DTOs.Posts
+namespace reichan_api.src.DTOs.Threads
 {
     public class ThreadResponseDto {
         public required string Id { get; init; }

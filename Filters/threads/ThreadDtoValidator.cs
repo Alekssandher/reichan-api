@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using FluentValidation;
-using reichan_api.src.DTOs.Posts;
+using reichan_api.src.DTOs.Threads;
 
-namespace reichan_api.Filters {
-    public class PostDtoValidator : AbstractValidator<ThreadDto>
+namespace reichan_api.Filters.threads {
+    public class ThreadDtoValidator : AbstractValidator<ThreadDto>
     {
-        public PostDtoValidator()
+        public ThreadDtoValidator()
         {
             ApplyStringValidationRules(x => x.Title);
             ApplyStringValidationRules(x => x.Content);

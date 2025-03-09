@@ -2,20 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using reichan_api.src.QueryParams;
 using reichan_api.src.Interfaces;
-using reichan_api.src.DTOs.Posts;
 using reichan_api.src.DTOs.Responses;
-using reichan_api.Filters;
 using reichan_api.src.Utils;
-using reichan_api.filters.Posts;
 using reichan_api.Filters.captcha;
+using reichan_api.src.DTOs.Threads;
+using reichan_api.filters.threads;
+using reichan_api.Filters.threads;
 
-namespace reichan_api.src.Modules.Posts
+namespace reichan_api.src.Modules.Threads
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PostsController : ControllerBase {
-        private readonly IPostService _threadService;
-        private readonly ILogger<PostsController> _logger;
+    public class ThreadsController : ControllerBase {
+        private readonly IThreadService _threadService;
+        private readonly ILogger<ThreadsController> _logger;
 
         // Responses objects
         private readonly InternalError internalError = new();
@@ -23,7 +23,7 @@ namespace reichan_api.src.Modules.Posts
         private readonly NoContentResponse noContentResponse = new();
         private readonly CreatedResponse createdResponse = new();
 
-        public PostsController(IPostService threadService, ILogger<PostsController> logger)
+        public ThreadsController(IThreadService threadService, ILogger<ThreadsController> logger)
         {
             _threadService = threadService;
             _logger = logger;
@@ -35,8 +35,8 @@ namespace reichan_api.src.Modules.Posts
         [ServiceFilter(typeof(ValidateQueryAttribute))]
         
         // Documentation
-        [EndpointName("GetPosts")]
-        [EndpointSummary("GetPosts")]
+        [EndpointName("GetThreads")]
+        [EndpointSummary("GetThreads")]
         [EndpointDescription("Retrieves a list of threads based on the provided query parameters.")]
         [ProducesResponseType(typeof(OkResponse<IReadOnlyList<ThreadResponseDto>>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -44,14 +44,14 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
 
         
-        public async Task<ActionResult> GetPosts([FromQuery] PostQueryParams queryParams)
+        public async Task<ActionResult> GetThreads([FromQuery] ThreadQueryParams queryParams)
         {    
             
             IReadOnlyList<ThreadResponseDto> threads = await _threadService.GetAllAsync(queryParams);
             
             if (!threads.Any()) return NotFound( threadNotFound );
             
-            return Ok(new OkResponse<IReadOnlyList<ThreadResponseDto>>("Posts Found.", "Posts fetched successfuly.", threads));
+            return Ok(new OkResponse<IReadOnlyList<ThreadResponseDto>>("Threads Found.", "Threads fetched successfuly.", threads));
 
             
             
@@ -60,8 +60,8 @@ namespace reichan_api.src.Modules.Posts
         [HttpGet("{id}")]
         [ServiceFilter(typeof(ValidateIdAttribute))]
         // Documentation
-        [EndpointName("GetPostById")]
-        [EndpointSummary("GetPostById")]
+        [EndpointName("GetThreadById")]
+        [EndpointSummary("GetThreadById")]
         [EndpointDescription("Retrieves a thread based on the provided ID.")]
         [ProducesResponseType(typeof(OkResponse<ThreadResponseDto>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -70,17 +70,17 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
 
         
-        public async Task<ActionResult> GetPostById( [FromRoute] string id ) {
+        public async Task<ActionResult> GetThreadById( [FromRoute] string id ) {
 
             ThreadResponseDto? thread = await _threadService.GetByIdAsync(id);
 
-            if (thread == null) return NotFound(new NotFound("Thread Not Found", $"Post with ID '{id}' was not found."));
+            if (thread == null) return NotFound(new NotFound("Thread Not Found", $"Thread with ID '{id}' was not found."));
              
             return Ok(
                 new OkResponse<ThreadResponseDto>
                 (
-                    "Post Found",
-                    "Post Fetched Successfuly",
+                    "Thread Found",
+                    "Thread Fetched Successfuly",
                     thread
                 )
             );
@@ -91,8 +91,8 @@ namespace reichan_api.src.Modules.Posts
         [ServiceFilter(typeof(ValidateIdAttribute))]
 
         // Documentation
-        [EndpointName("VotePost")]
-        [EndpointSummary("VotePost")]
+        [EndpointName("VoteThread")]
+        [EndpointSummary("VoteThread")]
         [EndpointDescription("Vote for a thread based on the providade ID and kind of vote.")]
         [ProducesResponseType(typeof(NoContentResponse), StatusCodes.Status204NoContent, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
@@ -103,7 +103,7 @@ namespace reichan_api.src.Modules.Posts
             
             if (!await _threadService.VoteAsync(id, vote))
             {
-                return NotFound(new NotFound("Post Not Found", $"Post Not Found by ID: {id}."));
+                return NotFound(new NotFound("Thread Not Found", $"Thread Not Found by ID: {id}."));
             }
 
             return StatusCode(
@@ -118,8 +118,8 @@ namespace reichan_api.src.Modules.Posts
         
         // Documentation
         [Consumes("application/json")]  
-        [EndpointName("CreatePost")]
-        [EndpointSummary("CreatePost")]
+        [EndpointName("CreateThread")]
+        [EndpointSummary("CreateThread")]
         [EndpointDescription("Create a thread based on the body formed.")]
         [ProducesResponseType(typeof(CreatedResponse), StatusCodes.Status201Created, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]

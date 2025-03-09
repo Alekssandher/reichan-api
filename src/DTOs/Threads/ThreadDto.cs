@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using reichan_api.src.Enums;
 
-namespace reichan_api.src.DTOs.Posts
+namespace reichan_api.src.DTOs.Threads
 {
     public record class ThreadDto
     {

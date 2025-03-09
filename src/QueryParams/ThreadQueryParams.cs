@@ -1,9 +1,9 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
-using reichan_api.src.Models.Posts;
+using reichan_api.src.Models.Threads;
 
 namespace reichan_api.src.QueryParams {
-    public class PostQueryParams {
+    public class ThreadQueryParams {
         private int _limit = 20;
         private int _skip = 0;
 

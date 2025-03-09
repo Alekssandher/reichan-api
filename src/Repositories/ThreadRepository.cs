@@ -1,10 +1,10 @@
 using MongoDB.Driver;
 using reichan_api.src.Interfaces;
-using reichan_api.src.Models.Posts;
+using reichan_api.src.Models.Threads;
 using reichan_api.src.QueryParams;
 
 namespace reichan_api.src.Repositories {
-    public class PostsRepository : IPostRepository
+    public class PostsRepository : IThreadRepository
     {
         private readonly IMongoCollection<ThreadModel> _threadsCollection;
 
@@ -26,7 +26,7 @@ namespace reichan_api.src.Repositories {
             _threadsCollection.Indexes.CreateOne(indexModel);
         }
 
-        public async Task<IReadOnlyList<ThreadModel>> GetAllAsync(PostQueryParams queryParams)
+        public async Task<IReadOnlyList<ThreadModel>> GetAllAsync(ThreadQueryParams queryParams)
         {
             FilterDefinition<ThreadModel> filter = queryParams.GetFilter();
             FindOptions<ThreadModel> options = queryParams.GetFindOptions();

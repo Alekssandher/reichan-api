@@ -1,4 +1,4 @@
-using reichan_api.src.DTOs.Posts;
+using reichan_api.src.DTOs.Threads;
 using reichan_api.src.Enums;
 
 namespace reichan_api.src.Utils

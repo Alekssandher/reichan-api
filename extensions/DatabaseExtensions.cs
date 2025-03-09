@@ -1,6 +1,6 @@
 using MongoDB.Driver;
 using reichan_api.Configs;
-using reichan_api.src.Models.Posts;
+using reichan_api.src.Models.Threads;
 
 namespace reichan_api.Extensions
 {

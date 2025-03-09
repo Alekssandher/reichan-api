@@ -1,10 +1,9 @@
-using MongoDB.Bson;
-using reichan_api.src.DTOs.Posts;
-using reichan_api.src.Models.Posts;
+using reichan_api.src.DTOs.Threads;
+using reichan_api.src.Models.Threads;
 using reichan_api.src.Utils;
 
 namespace reichan_api.src.Mappers {
-    public static class PostMapper
+    public static class ThreadMapper
     {
         public static ThreadResponseDto ResponseToDto(this ThreadModel post)
         {
