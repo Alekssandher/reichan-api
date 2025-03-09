@@ -1,5 +1,6 @@
 
 using reichan_api.src.DTOs.Replies;
+using reichan_api.src.Enums;
 using reichan_api.src.Interfaces.replies;
 using reichan_api.src.Mappers;
 using reichan_api.src.Models.Posts;
@@ -17,9 +18,9 @@ namespace reichan_api.src.Modules.replies
             _repository = repository;
         }
 
-        public async Task<IReadOnlyList<ReplyResponseDto>> GetAllAsync(ReplyQueryParams replyQuery)
+        public async Task<IReadOnlyList<ReplyResponseDto>> GetAllAsync(BoardTypes boardTypes,ReplyQueryParams replyQuery)
         {
-            IReadOnlyList<ReplyModel> replies = await _repository.GetAllAsync(replyQuery);
+            IReadOnlyList<ReplyModel> replies = await _repository.GetAllAsync(boardTypes, replyQuery);
             return replies.Select(reply => reply.ToResponseDto()).ToList();
         }
 

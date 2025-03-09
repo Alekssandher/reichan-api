@@ -15,15 +15,15 @@ namespace reichan_api.src.Modules.Posts {
             _postsRepository = postsRepository;
         }
 
-        public async Task<IReadOnlyList<PostResponseDTO>> GetAllAsync( PostQueryParams queryParams )
+        public async Task<IReadOnlyList<ThreadResponseDto>> GetAllAsync( PostQueryParams queryParams )
         {
-            IReadOnlyList<PostModel> posts = await _postsRepository.GetAllAsync(queryParams);
+            IReadOnlyList<ThreadModel> posts = await _postsRepository.GetAllAsync(queryParams);
             return posts.Select(post => post.ResponseToDto()).ToList();
         }
 
-        public async Task<PostResponseDTO?> GetByIdAsync(string id)
+        public async Task<ThreadResponseDto?> GetByIdAsync(string id)
         {
-            PostModel? post = await _postsRepository.GetByIdAsync(id);
+            ThreadModel? post = await _postsRepository.GetByIdAsync(id);
             return post?.ResponseToDto();
         }
 
@@ -32,7 +32,7 @@ namespace reichan_api.src.Modules.Posts {
             return await _postsRepository.UpdateVoteAsync(id, vote);
         }
 
-        public async Task<bool> CreateAsync(PostDto postDto)
+        public async Task<bool> CreateAsync(ThreadDto postDto)
         {
             return await _postsRepository.InsertAsync(postDto.ToModel());
         }

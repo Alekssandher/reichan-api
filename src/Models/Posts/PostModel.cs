@@ -4,7 +4,7 @@ using reichan_api.src.Enums;
 using reichan_api.src.Utils;
 
 namespace reichan_api.src.Models.Posts {
-    public class PostModel 
+    public class ThreadModel 
     {
         [BsonId] 
         [BsonRepresentation(BsonType.ObjectId)] 
@@ -15,7 +15,7 @@ namespace reichan_api.src.Models.Posts {
         public required string Media { get; init; }
 
         [BsonRepresentation(BsonType.String)]
-        public required Categories Category { get; init; }
+        public required BoardTypes BoardType { get; init; }
         public required string Author { get; init; }
         public DateTime CreatedAt { get; init; }
         public bool Active { get; init; }

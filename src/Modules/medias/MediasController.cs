@@ -39,9 +39,9 @@ namespace reichan_api.src.Modules.Medias
             IFormFile file, 
 
             [Required(ErrorMessage = "Category is required.")]
-            [EnumDataType(typeof(Categories), ErrorMessage = "You must provide a valid category.")]
+            [EnumDataType(typeof(BoardTypes), ErrorMessage = "You must provide a valid category.")]
             [FromRoute] 
-            Categories category,
+            BoardTypes category,
             
             [FromHeader(Name = "X-CaptchaCode")] 
             string CaptchaCode

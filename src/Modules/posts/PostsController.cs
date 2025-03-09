@@ -14,18 +14,18 @@ namespace reichan_api.src.Modules.Posts
     [Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase {
-        private readonly IPostService _postService;
+        private readonly IPostService _threadService;
         private readonly ILogger<PostsController> _logger;
 
         // Responses objects
         private readonly InternalError internalError = new();
-        private readonly NotFound postNotFound = new("Posts Not Found", "There are no posts mathing the query.");
+        private readonly NotFound threadNotFound = new("Not Found", "There are no threads mathing the query.");
         private readonly NoContentResponse noContentResponse = new();
         private readonly CreatedResponse createdResponse = new();
 
-        public PostsController(IPostService postService, ILogger<PostsController> logger)
+        public PostsController(IPostService threadService, ILogger<PostsController> logger)
         {
-            _postService = postService;
+            _threadService = threadService;
             _logger = logger;
             
         }
@@ -37,8 +37,8 @@ namespace reichan_api.src.Modules.Posts
         // Documentation
         [EndpointName("GetPosts")]
         [EndpointSummary("GetPosts")]
-        [EndpointDescription("Retrieves a list of posts based on the provided query parameters.")]
-        [ProducesResponseType(typeof(OkResponse<IReadOnlyList<PostResponseDTO>>), StatusCodes.Status200OK, "application/json")]
+        [EndpointDescription("Retrieves a list of threads based on the provided query parameters.")]
+        [ProducesResponseType(typeof(OkResponse<IReadOnlyList<ThreadResponseDto>>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
@@ -47,11 +47,11 @@ namespace reichan_api.src.Modules.Posts
         public async Task<ActionResult> GetPosts([FromQuery] PostQueryParams queryParams)
         {    
             
-            IReadOnlyList<PostResponseDTO> posts = await _postService.GetAllAsync(queryParams);
+            IReadOnlyList<ThreadResponseDto> threads = await _threadService.GetAllAsync(queryParams);
             
-            if (!posts.Any()) return NotFound( postNotFound );
+            if (!threads.Any()) return NotFound( threadNotFound );
             
-            return Ok(new OkResponse<IReadOnlyList<PostResponseDTO>>("Posts Found.", "Posts fetched successfuly.", posts));
+            return Ok(new OkResponse<IReadOnlyList<ThreadResponseDto>>("Posts Found.", "Posts fetched successfuly.", threads));
 
             
             
@@ -62,8 +62,8 @@ namespace reichan_api.src.Modules.Posts
         // Documentation
         [EndpointName("GetPostById")]
         [EndpointSummary("GetPostById")]
-        [EndpointDescription("Retrieves a post based on the provided ID.")]
-        [ProducesResponseType(typeof(OkResponse<PostResponseDTO>), StatusCodes.Status200OK, "application/json")]
+        [EndpointDescription("Retrieves a thread based on the provided ID.")]
+        [ProducesResponseType(typeof(OkResponse<ThreadResponseDto>), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(ContentTooLarge), StatusCodes.Status413RequestEntityTooLarge, "application/problem+json")]
@@ -72,16 +72,16 @@ namespace reichan_api.src.Modules.Posts
         
         public async Task<ActionResult> GetPostById( [FromRoute] string id ) {
 
-            PostResponseDTO? post = await _postService.GetByIdAsync(id);
+            ThreadResponseDto? thread = await _threadService.GetByIdAsync(id);
 
-            if (post == null) return NotFound(new NotFound("Post Not Found", $"Post with ID '{id}' was not found."));
+            if (thread == null) return NotFound(new NotFound("Thread Not Found", $"Post with ID '{id}' was not found."));
              
             return Ok(
-                new OkResponse<PostResponseDTO>
+                new OkResponse<ThreadResponseDto>
                 (
                     "Post Found",
                     "Post Fetched Successfuly",
-                    post
+                    thread
                 )
             );
             
@@ -93,7 +93,7 @@ namespace reichan_api.src.Modules.Posts
         // Documentation
         [EndpointName("VotePost")]
         [EndpointSummary("VotePost")]
-        [EndpointDescription("Vote for a post based on the providade ID and kind of vote.")]
+        [EndpointDescription("Vote for a thread based on the providade ID and kind of vote.")]
         [ProducesResponseType(typeof(NoContentResponse), StatusCodes.Status204NoContent, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
@@ -101,7 +101,7 @@ namespace reichan_api.src.Modules.Posts
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
         public async Task<ActionResult> Vote( [FromRoute] string id, [FromRoute] bool vote ) {
             
-            if (!await _postService.VoteAsync(id, vote))
+            if (!await _threadService.VoteAsync(id, vote))
             {
                 return NotFound(new NotFound("Post Not Found", $"Post Not Found by ID: {id}."));
             }
@@ -120,20 +120,20 @@ namespace reichan_api.src.Modules.Posts
         [Consumes("application/json")]  
         [EndpointName("CreatePost")]
         [EndpointSummary("CreatePost")]
-        [EndpointDescription("Create a post based on the body formed.")]
+        [EndpointDescription("Create a thread based on the body formed.")]
         [ProducesResponseType(typeof(CreatedResponse), StatusCodes.Status201Created, "application/json")]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
 
         
-        public async Task<ActionResult> Create( [FromBody] PostDto postDto, [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode) {
+        public async Task<ActionResult> Create( [FromBody] ThreadDto threadDto, [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode) {
             
-            bool exists = await CheckMediaExists.CheckImageExistsAsync(postDto.Media);
+            bool exists = await CheckMediaExists.CheckImageExistsAsync(threadDto.Media, threadDto.BoardType);
             
             if(!exists) return NotFound(new NotFound("Not Found","The media provided does not exist or was not found."));
 
-            bool created = await _postService.CreateAsync( postDto );
+            bool created = await _threadService.CreateAsync( threadDto );
 
             return created
                 ? StatusCode(201, createdResponse)

@@ -1,4 +1,5 @@
 using reichan_api.src.DTOs.Posts;
+using reichan_api.src.Enums;
 
 namespace reichan_api.src.Utils
 {
@@ -6,7 +7,7 @@ namespace reichan_api.src.Utils
     {
         private static readonly string cloudiUrl = "https://res.cloudinary.com/dnf22gtjt/image/upload/f_auto,q_auto/v1";
         private static readonly HttpClient httpClient = new();
-        public static async Task<bool> CheckImageExistsAsync(string media)
+        public static async Task<bool> CheckImageExistsAsync(string media, BoardTypes boardType)
         {
             
 
@@ -14,7 +15,12 @@ namespace reichan_api.src.Utils
             {
                 return false;
             }
-            string completedUrl = $"{cloudiUrl}{media}";
+            if(!Enum.IsDefined(typeof(BoardTypes), boardType))
+            {
+                return false;
+            }
+
+            string completedUrl = $"{cloudiUrl}{boardType}{media}";
 
             HttpResponseMessage response = await httpClient.GetAsync(completedUrl);
 

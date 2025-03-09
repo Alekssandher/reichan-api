@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
+using reichan_api.src.Enums;
 using reichan_api.src.Models.Replies;
 
 namespace reichan_api.src.QueryParams

@@ -6,16 +6,16 @@ using reichan_api.src.Utils;
 namespace reichan_api.src.Mappers {
     public static class PostMapper
     {
-        public static PostResponseDTO ResponseToDto(this PostModel post)
+        public static ThreadResponseDto ResponseToDto(this ThreadModel post)
         {
-            return new PostResponseDTO
+            return new ThreadResponseDto
             {
                 Id = post.PublicId,
                 Author = post.Author,
                 Title = post.Title,
                 Content = post.Content,
                 Media = post.Media,
-                Category = post.Category,
+                BoardType = post.BoardType,
                 UpVotes = post.UpVotes,
                 DownVotes = post.DownVotes,
                 CreatedAt = post.CreatedAt,
@@ -23,16 +23,16 @@ namespace reichan_api.src.Mappers {
             };
         }
 
-        public static PostModel ToModel(this PostDto postDto ) {
+        public static ThreadModel ToModel(this ThreadDto postDto ) {
             
-            return new PostModel 
+            return new ThreadModel 
             {
                 Author = postDto.Author ?? "Anonymous",
                 PublicId = SnowflakeIdGenerator.GenerateId().ToString(),
                 Title = postDto.Title,
                 Content = postDto.Content,
                 Media = postDto.Media,
-                Category = postDto.Category,
+                BoardType = postDto.BoardType,
                 UpVotes = 0,
                 DownVotes = 0,
                 CreatedAt = DateTime.UtcNow,

@@ -5,7 +5,7 @@ using reichan_api.src.Enums;
 
 namespace reichan_api.src.DTOs.Posts
 {
-    public record class PostDto
+    public record class ThreadDto
     {
         [Required(ErrorMessage = "Title is required.")]
         [StringLength(30, MinimumLength = 1, ErrorMessage = "Title chars must be between 1 - 30 chars")]
@@ -16,15 +16,14 @@ namespace reichan_api.src.DTOs.Posts
         public required string Content { get; init; }
 
         [Required(ErrorMessage = "Media is required.")]
-        [RegularExpression(@"^[a-z0-9/]+$", ErrorMessage = "Invalid image or video format.")]
-        [StringLength(30, MinimumLength = 1, ErrorMessage = "Media id lenght invalid")]
+        [RegularExpression(@"^\d{17,19}$", ErrorMessage = "Media must contain only numbers and be between 17 and 19 characters.")]
         [Description("Media ID obtained in the path POST: /api/media/{category}")]
         public required string Media { get; init; }
 
-        [Required(ErrorMessage = "Category is required.")]
-        [EnumDataType(typeof(Categories), ErrorMessage = "Invalid category.")]
+        [Required(ErrorMessage = "BoardType is required.")]
+        [EnumDataType(typeof(BoardTypes), ErrorMessage = "BoardType category.")]
         
-        public Categories Category { get; init; }
+        public BoardTypes BoardType { get; init; }
 
         [Description("Author nickname")]
         [DefaultValue("Anonymous")]

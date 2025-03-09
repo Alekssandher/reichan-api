@@ -15,9 +15,12 @@ namespace reichan_api.src.Models.Replies
         public required string ParentId { get; init; }
 
         [BsonRepresentation(BsonType.String)]
-        public required ParentType ParentType { get; init; }
+        public required ParentTypes ParentType { get; init; }
+
+        [BsonRepresentation(BsonType.String)]
+        public required BoardTypes BoardType { get; init; }
         public required string Content { get; init; }
-        public required string Media { get; init; }
+        public string? Media { get; init; }
         public required string Author { get; init; }
         public DateTime CreatedAt { get; init; }
 

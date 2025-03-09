@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using reichan_api.Filters.captcha;
 using reichan_api.src.DTOs.Replies;
 using reichan_api.src.DTOs.Responses;
+using reichan_api.src.Enums;
 using reichan_api.src.Interfaces.replies;
 using reichan_api.src.QueryParams;
 using reichan_api.src.Utils;
@@ -12,7 +14,7 @@ namespace reichan_api.src.Modules.replies
     [Route("api/[controller]")]
     public class RepliesController : ControllerBase
     {
-        private readonly NotFound notFound = new("Not Found", "We couldn't find the post you are refering to.");
+        private readonly NotFound notFound = new("Not Found", "We couldn't find the thread or reply you are refering to.");
         private readonly CreatedResponse createdResponse = new();
         private readonly IReplyService _replyService;
         public RepliesController(IReplyService replyService)
@@ -29,16 +31,16 @@ namespace reichan_api.src.Modules.replies
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest, "application/problem+json")]
         [ProducesResponseType(typeof(NotFound), StatusCodes.Status404NotFound, "application/problem+json")]
         [ProducesResponseType(typeof(InternalError), StatusCodes.Status500InternalServerError, "application/problem+json")]
-        public async Task<ActionResult> GetReplies([FromQuery] ReplyQueryParams replyQuery)
+        public async Task<ActionResult> GetReplies([FromQuery, Required] BoardTypes boardType, [FromQuery] ReplyQueryParams replyQuery)
         {
-            IReadOnlyList<ReplyResponseDto> replies = await _replyService.GetAllAsync(replyQuery);
+            IReadOnlyList<ReplyResponseDto> replies = await _replyService.GetAllAsync(boardType, replyQuery);
 
-            return StatusCode(200, new OkResponse<IReadOnlyList<ReplyResponseDto>>("", "", replies));
+            return StatusCode(200, new OkResponse<IReadOnlyList<ReplyResponseDto>>("Replies Found", "Replies fetched successfuly.", replies));
 
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(ValidateCaptcha))]
+        //[ServiceFilter(typeof(ValidateCaptcha))]
         [Consumes("application/json")]  
         [EndpointName("CreateReply")]
         [EndpointSummary("CreateReply")]
@@ -50,10 +52,14 @@ namespace reichan_api.src.Modules.replies
 
         public async Task<ActionResult> CreateReply([FromBody] ReplyDto reply, [FromHeader(Name = "X-CaptchaCode")] string CaptchaCode)
         {   
-            bool mediaExists = await CheckMediaExists.CheckImageExistsAsync(reply.Media);
+            if(reply.Media != null)
+            {
+                bool mediaExists = await CheckMediaExists.CheckImageExistsAsync(reply.Media, reply.BoardType);
             
-            if(!mediaExists) return NotFound(new NotFound("Not Found","The media provided does not exist or was not found."));
+                if(!mediaExists) return NotFound(new NotFound("Not Found","The media provided does not exist or was not found."));
 
+            }
+            
             bool created = await _replyService.CreateAsync(reply);
 
             return created

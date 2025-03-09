@@ -22,29 +22,29 @@ namespace reichan_api.src.QueryParams {
         public string? Category { get; set; }
         public string? Author { get; set; }
 
-        public FilterDefinition<PostModel> GetFilter() {
+        public FilterDefinition<ThreadModel> GetFilter() {
             
-            FilterDefinition<PostModel> filter = Builders<PostModel>.Filter.Empty;
+            FilterDefinition<ThreadModel> filter = Builders<ThreadModel>.Filter.Empty;
             
             if (!string.IsNullOrWhiteSpace(Category)) {
 
                 string safeCategory = SanitizeInput(Category.ToLower());
 
-                filter &= Builders<PostModel>.Filter.Eq("Category", safeCategory);
+                filter &= Builders<ThreadModel>.Filter.Eq("Category", safeCategory);
             }
 
             if (!string.IsNullOrWhiteSpace(Author)) {
-                filter &= Builders<PostModel>.Filter.Regex("Author", new BsonRegularExpression(Author, "i"));
+                filter &= Builders<ThreadModel>.Filter.Regex("Author", new BsonRegularExpression(Author, "i"));
             }
 
             return filter;
         }
 
-        public FindOptions<PostModel> GetFindOptions() {
-            return new FindOptions<PostModel> {
+        public FindOptions<ThreadModel> GetFindOptions() {
+            return new FindOptions<ThreadModel> {
                 Skip = Skip,
                 Limit = Limit,
-                Sort = Builders<PostModel>.Sort.Descending("CreatedAt")
+                Sort = Builders<ThreadModel>.Sort.Descending("CreatedAt")
             };
         }
 

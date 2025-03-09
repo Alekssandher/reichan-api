@@ -3,7 +3,7 @@ using FluentValidation;
 using reichan_api.src.DTOs.Posts;
 
 namespace reichan_api.Filters {
-    public class PostDtoValidator : AbstractValidator<PostDto>
+    public class PostDtoValidator : AbstractValidator<ThreadDto>
     {
         public PostDtoValidator()
         {
@@ -19,7 +19,7 @@ namespace reichan_api.Filters {
             
         }
 
-        private void ApplyStringValidationRules(Expression<Func<PostDto, string>> property)
+        private void ApplyStringValidationRules(Expression<Func<ThreadDto, string>> property)
         {
             RuleFor(property)
                 .NotEmpty().WithMessage("{PropertyName} is required.")

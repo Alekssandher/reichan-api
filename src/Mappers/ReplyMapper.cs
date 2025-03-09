@@ -11,6 +11,7 @@ namespace reichan_api.src.Mappers
             return new ReplyResponseDto {
                 Id = model.PublicId,
                 ParentId = model.ParentId,
+                BoardType = model.BoardType,
                 ParentType = model.ParentType,
                 Content = model.Content,
                 Media = model.Media,
@@ -22,8 +23,9 @@ namespace reichan_api.src.Mappers
         {
             return new ReplyModel {
                 ParentId = dto.ParentId,
-                PublicId = SnowflakeIdGenerator.GenerateId().ToString(),
                 ParentType = dto.ParentType,
+                PublicId = SnowflakeIdGenerator.GenerateId().ToString(),
+                BoardType = dto.BoardType,
                 Content = dto.Content,
                 Media = dto.Media,
                 Author = dto.Author ?? "Anonymous",

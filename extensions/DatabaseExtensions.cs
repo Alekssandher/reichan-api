@@ -31,10 +31,10 @@ namespace reichan_api.Extensions
                 sp.GetRequiredService<IMongoClient>().GetDatabase(databaseConfig.DatabaseName)
             );
 
-            services.AddSingleton<IMongoCollection<PostModel>>(sp =>
+            services.AddSingleton<IMongoCollection<ThreadModel>>(sp =>
             {
                 IMongoDatabase database = sp.GetRequiredService<IMongoDatabase>();
-                return database.GetCollection<PostModel>(databaseConfig.PostsCollection);
+                return database.GetCollection<ThreadModel>(databaseConfig.PostsCollection);
             });
         }
     }
