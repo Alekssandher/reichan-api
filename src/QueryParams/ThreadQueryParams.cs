@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using reichan_api.src.Enums;
 using reichan_api.src.Models.Threads;
 
 namespace reichan_api.src.QueryParams {
@@ -19,22 +22,23 @@ namespace reichan_api.src.QueryParams {
             set => _skip = Math.Max(value, 0);  
         }
 
-        public string? Category { get; set; }
+        [EnumDataType(typeof(BoardTypes), ErrorMessage = "Invalid BoardType.")]
+        public BoardTypes? BoardType { get; set; }
+
+        [StringLength(40, MinimumLength = 1, ErrorMessage = "Author chars must be between 1 and 30.")]
+        [RegularExpression(@"^[a-zA-Z0-9_-]{1,40}$", ErrorMessage = "Author contains invalid characters.")]
         public string? Author { get; set; }
 
         public FilterDefinition<ThreadModel> GetFilter() {
-            
             FilterDefinition<ThreadModel> filter = Builders<ThreadModel>.Filter.Empty;
             
-            if (!string.IsNullOrWhiteSpace(Category)) {
-
-                string safeCategory = SanitizeInput(Category.ToLower());
-
-                filter &= Builders<ThreadModel>.Filter.Eq("Category", safeCategory);
+            if (BoardType.HasValue) {
+                filter &= Builders<ThreadModel>.Filter.Eq("BoardType", BoardType.Value.ToString());
             }
 
             if (!string.IsNullOrWhiteSpace(Author)) {
-                filter &= Builders<ThreadModel>.Filter.Regex("Author", new BsonRegularExpression(Author, "i"));
+                string safeAuthor = Regex.Escape(SanitizeInput(Author.ToLower()));
+                filter &= Builders<ThreadModel>.Filter.Regex("Author", new BsonRegularExpression(safeAuthor, "i"));
             }
 
             return filter;

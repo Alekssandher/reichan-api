@@ -8,6 +8,7 @@ namespace reichan_api.src.Enums {
     {
         politic,
         anime,
+        memes,
         games,
         reviews,
         art

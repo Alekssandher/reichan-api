@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using reichan_api.filters.threads;
 using reichan_api.Filters.captcha;
 using reichan_api.src.DTOs.Replies;
 using reichan_api.src.DTOs.Responses;
@@ -23,6 +24,7 @@ namespace reichan_api.src.Modules.replies
         }
 
         [HttpGet]
+       
         [Consumes("application/json")]  
         [EndpointName("GetReplies")]
         [EndpointSummary("GetReplies")]

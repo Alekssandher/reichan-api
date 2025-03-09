@@ -16,13 +16,13 @@ namespace reichan_api.src.Modules.Medias
         
         private readonly BadRequest InvalidFileError = new("Invalid File", "The file provided is null or malformed.");
         private readonly BadRequest InvalidFileTypeError = new ("Invalid File Type ", "Only image or video files are allowed.");
-        private readonly BadRequest InvalidCategoryError = new("Invalid Category", "You must provide a valid category.");
+        private readonly BadRequest InvalidBoardTypeError = new("Invalid BoardType", "You must provide a valid BoardType.");
         private readonly Cloudinary _cloudinary;
         public MediasController(Cloudinary cloudinary) {
             _cloudinary = cloudinary;
         }
 
-        [HttpPost("{category}")]
+        [HttpPost("{boardType}")]
         [RequestSizeLimit( 3 * 1024 * 1024)] // 3 MB
         [ServiceFilter(typeof(ValidateCaptcha))]
 
@@ -38,10 +38,10 @@ namespace reichan_api.src.Modules.Medias
 
             IFormFile file, 
 
-            [Required(ErrorMessage = "Category is required.")]
-            [EnumDataType(typeof(BoardTypes), ErrorMessage = "You must provide a valid category.")]
+            [Required(ErrorMessage = "BoardType is required.")]
+            [EnumDataType(typeof(BoardTypes), ErrorMessage = "You must provide a valid BoardType.")]
             [FromRoute] 
-            BoardTypes category,
+            BoardTypes boardType,
             
             [FromHeader(Name = "X-CaptchaCode")] 
             string CaptchaCode
@@ -66,9 +66,9 @@ namespace reichan_api.src.Modules.Medias
 
             if (!permittedMimeTypes.Contains(file.ContentType) || !permittedExtensions.Contains(fileExtension)) return BadRequest( InvalidFileTypeError );
             
-            string strCategory = category.ToString();
+            string strBoardType = boardType.ToString();
 
-            if( string.IsNullOrEmpty(strCategory)) return BadRequest( InvalidCategoryError );
+            if( string.IsNullOrEmpty(strBoardType)) return BadRequest( InvalidBoardTypeError );
 
             using var stream = file.OpenReadStream();
             
@@ -76,7 +76,7 @@ namespace reichan_api.src.Modules.Medias
             {
                 File = new FileDescription(file.FileName, stream),
                 UseFilename = true,
-                Folder = strCategory,
+                Folder = strBoardType,
                 PublicId = SnowflakeIdGenerator.GenerateId().ToString(),
                 UniqueFilename = false,
                 Overwrite = true
@@ -84,9 +84,11 @@ namespace reichan_api.src.Modules.Medias
             
             ImageUploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-            string fileId = uploadResult.PublicId;
-        
-            return Ok(new OkResponse<string>("Uploaded","File was uploaded successfully", fileId));
+            string imageUrl = uploadResult.SecureUrl.ToString();
+
+            string fileName = imageUrl[(imageUrl.LastIndexOf('/') + 1)..];
+
+            return Ok(new OkResponse<string>("Uploaded","File was uploaded successfully", fileName));
         }
 
         

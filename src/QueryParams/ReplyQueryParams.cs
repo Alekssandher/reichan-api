@@ -1,6 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using reichan_api.src.Enums;
 using reichan_api.src.Models.Replies;
 
 namespace reichan_api.src.QueryParams
@@ -22,7 +23,11 @@ namespace reichan_api.src.QueryParams
             set => _skip = Math.Max(value, 0);  
         }
 
+        [RegularExpression(@"^\d{16,19}$", ErrorMessage = "ParentId ID must be a valid numeric ID between 16 and 19 digits.")]
         public string? ParentId { get; set; }
+
+        [StringLength(40, MinimumLength = 1, ErrorMessage = "Author chars must be between 1 and 30.")]
+        [RegularExpression(@"^[a-zA-Z0-9_-]{1,40}$", ErrorMessage = "Author contains invalid characters.")]
         public string? Author { get; set; }
 
         public FilterDefinition<ReplyModel> GetFilter() {
@@ -37,7 +42,8 @@ namespace reichan_api.src.QueryParams
             }
 
             if (!string.IsNullOrWhiteSpace(Author)) {
-                filter &= Builders<ReplyModel>.Filter.Regex("Author", new BsonRegularExpression(Author, "i"));
+                string safeAuthor = Regex.Escape(SanitizeInput(Author.ToLower()));
+                filter &= Builders<ReplyModel>.Filter.Regex("Author", new BsonRegularExpression(safeAuthor, "i"));
             }
 
             return filter;
@@ -52,8 +58,7 @@ namespace reichan_api.src.QueryParams
         }
 
         private string SanitizeInput(string input) {
-            
-            return input.Replace("$", "").Replace("{", "").Replace("}", "").Trim();
+            return new string(input.Where(c => char.IsLetterOrDigit(c) || c == '-' || c == '_').ToArray()).Trim();
         }
     }
 }
