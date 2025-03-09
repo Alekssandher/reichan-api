@@ -20,7 +20,7 @@ namespace reichan_api.src.Utils
                 return false;
             }
 
-            string completedUrl = $"{cloudiUrl}{boardType}{media}";
+            string completedUrl = $"{cloudiUrl}/{boardType}/{media}";
 
             HttpResponseMessage response = await httpClient.GetAsync(completedUrl);
 

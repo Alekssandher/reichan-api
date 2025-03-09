@@ -40,7 +40,7 @@ namespace reichan_api.src.Modules.replies
         }
 
         [HttpPost]
-        //[ServiceFilter(typeof(ValidateCaptcha))]
+        [ServiceFilter(typeof(ValidateCaptcha))]
         [Consumes("application/json")]  
         [EndpointName("CreateReply")]
         [EndpointSummary("CreateReply")]
