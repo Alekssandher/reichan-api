@@ -84,11 +84,12 @@ namespace reichan_api.src.Modules.Medias
             
             ImageUploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-            string imageUrl = uploadResult.SecureUrl.ToString();
+            string fullId = uploadResult.PublicId; 
+            string fileId = fullId.Substring(fullId.LastIndexOf('/') + 1); 
 
-            string fileName = imageUrl.Substring(imageUrl.LastIndexOf('/') + 1);
+            return Ok(new OkResponse<string>("Uploaded", "File was uploaded successfully", fileId));
 
-            return Ok(new OkResponse<string>("Uploaded","File was uploaded successfully", fileName));
+
         }
 
         
