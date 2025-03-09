@@ -86,7 +86,7 @@ namespace reichan_api.src.Modules.Medias
 
             string imageUrl = uploadResult.SecureUrl.ToString();
 
-            string fileName = imageUrl[(imageUrl.LastIndexOf('/') + 1)..];
+            string fileName = imageUrl.Substring(imageUrl.LastIndexOf('/') + 1);
 
             return Ok(new OkResponse<string>("Uploaded","File was uploaded successfully", fileName));
         }
